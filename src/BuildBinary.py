@@ -8,17 +8,19 @@ import datetime
 import importlib
 import textwrap
 
-from pathlib import Path
+from pathlib import Path, PurePath
 
 from cx_Freeze import setup, Executable
 from dbrownell_Common import PathEx
 
 
 # ----------------------------------------------------------------------
+_this_dir = Path(__file__).parent
+
 _name = "PythonProjectBootstrapper"
 _initial_year: int = 2024
 _entry_point_script = PathEx.EnsureFile(
-    Path(__file__).parent / "PythonProjectBootstrapper" / "EntryPoint.py",
+    _this_dir / "PythonProjectBootstrapper" / "EntryPoint.py",
 )
 _copyright_template = textwrap.dedent(
     """\
@@ -71,6 +73,17 @@ else:
 
 
 # ----------------------------------------------------------------------
+_include_files: list[tuple[str, str]] = []
+
+for child in PathEx.EnsureDir(
+    _this_dir / "PythonProjectBootstrapper" / "python_project" / "hooks"
+).iterdir():
+    relative_path = PurePath(*child.parts[len(_this_dir.parts) :])
+
+    _include_files.append((relative_path.as_posix(), (PurePath("lib") / relative_path).as_posix()))
+
+
+# ----------------------------------------------------------------------
 setup(
     name=_name,
     version=_version,
@@ -96,8 +109,11 @@ setup(
             ],
             "no_compress": False,
             "optimize": 0,
-            # "packages": [],
-            # "include_files": [],
+            "packages": [
+                "cookiecutter.extensions",
+                "rich",
+            ],
+            "include_files": _include_files,
         },
     },
 )

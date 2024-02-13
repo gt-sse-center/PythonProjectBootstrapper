@@ -115,7 +115,7 @@ jobs:
     with:
       operating_system: ${{ matrix.os }}
       python_version: ${{ matrix.python_version }}
-      validation_command: python -c "from PythonProjectBootstrapper import __version__; print(__version__)"
+      validation_command: python -c "from PythonProjectBootstrapper import __version__; print(__version__); from PythonProjectBootstrapper import EntryPoint; print(EntryPoint)"
 
   # ----------------------------------------------------------------------
   create_binary:
@@ -162,7 +162,7 @@ jobs:
     with:
       operating_system: ${{ matrix.os }}
       python_version: ${{ matrix.python_version }}
-      validation_command: PythonProjectBootstrapper Version
+      validation_command: PythonProjectBootstrapper this_value_is_ignored --version
 
   # ----------------------------------------------------------------------
   publish:
