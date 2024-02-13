@@ -1,16 +1,23 @@
 # ----------------------------------------------------------------------
-# SPDX-FileCopyrightText: 2024 Scientific Software Engineering Center <ssec-dev@gatech.edu>
-# SPDX-License-Identifier: MIT
+# |
+# |  Copyright Scientific Software Engineering Center at Georgia Tech 2024
+# |  Distributed under the MIT License.
+# |
 # ----------------------------------------------------------------------
 """This file serves as an example of how to create scripts that can be invoked from the command line once the package is installed."""
 
 import sys
 
+from pathlib import Path
+from typing import Annotated, Optional
+
 import typer
 
 from typer.core import TyperGroup  # type: ignore [import-untyped]
 
-from PythonProjectBootstrapper import Math, __version__
+from cookiecutter.main import cookiecutter
+from dbrownell_Common import PathEx
+from PythonProjectBootstrapper import __version__
 
 
 # ----------------------------------------------------------------------
@@ -32,55 +39,116 @@ app = typer.Typer(
 
 
 # ----------------------------------------------------------------------
-@app.command("Add")
-def Add(
-    x: int,
-    y: int,
-) -> None:
-    """Adds 2 values."""
+_configuration_filename_option = typer.Option(
+    "--configuration-filename",
+    dir_okay=False,
+    exists=True,
+    resolve_path=True,
+    help="Filename that contains template configuration values; see https://cookiecutter.readthedocs.io/en/stable/advanced/user_config.html for more info.",
+)
 
-    sys.stdout.write(str(Math.Add(x, y)))
-
-
-# ----------------------------------------------------------------------
-@app.command("Sub")
-def Sub(
-    x: int,
-    y: int,
-) -> None:
-    """Subtracts 2 values."""
-
-    sys.stdout.write(str(Math.Sub(x, y)))
+_overwrite_option = typer.Option(
+    "--overwrite", help="Overwrite the contents of the output directory if it exists."
+)
+_replay_option = typer.Option(
+    "--replay", help="Do not prompt for input, instead read from saved json."
+)
+_version_option = typer.Option("--version", help="Display the current version and exit.")
 
 
 # ----------------------------------------------------------------------
-@app.command("Mult")
-def Mult(
-    x: int,
-    y: int,
-) -> None:
-    """Multiplies 2 values."""
+# The cookiecutter project dir must be accessed in different ways depending on whether the code is:
+#   - running from source
+#   - running from a pip installation
+#   - running as a frozen binary.
+#
+if getattr(sys, "frozen", False):
+    _project_dir = (
+        Path(sys.executable).parent / "lib" / "PythonProjectBootstrapper" / "python_project"
+    )
 
-    sys.stdout.write(str(Math.Mult(x, y)))
+    # This is admittedly very strange. cookiecutter apparently uses sys.argv[0] to invoke
+    # python hooks. Within a binary, sys.argv[0] will point back to this file. So, create
+    # functionality that invokes cookiecutter when passed a directory and executes python code
+    # from a file when invoked as a hook.
+
+    # ----------------------------------------------------------------------
+    @app.command()
+    def FrozenExecute(
+        output_dir: Annotated[
+            Path, typer.Argument(resolve_path=True, help="Directory to populate.")
+        ],
+        configuration_filename: Annotated[Optional[Path], _configuration_filename_option] = None,
+        overwrite: Annotated[bool, _overwrite_option] = False,
+        replay: Annotated[bool, _replay_option] = False,
+        version: Annotated[bool, _version_option] = False,
+    ) -> None:
+        if output_dir.is_file():
+            with output_dir.open() as f:
+                content = f.read()
+
+            exec(content)  # pylint: disable=exec-used
+            return
+
+        _ExecuteOutputDir(
+            output_dir,
+            configuration_filename,
+            overwrite=overwrite,
+            replay=replay,
+            version=version,
+        )
+
+    # ----------------------------------------------------------------------
+
+else:
+    _project_dir = Path(__file__).parent / "python_project"
+
+    # ----------------------------------------------------------------------
+    @app.command()
+    def StandardExecute(
+        output_dir: Annotated[
+            Path, typer.Argument(file_okay=False, resolve_path=True, help="Directory to populate.")
+        ],
+        configuration_filename: Annotated[Optional[Path], _configuration_filename_option] = None,
+        overwrite: Annotated[bool, _overwrite_option] = False,
+        replay: Annotated[bool, _replay_option] = False,
+        version: Annotated[bool, _version_option] = False,
+    ) -> None:
+        _ExecuteOutputDir(
+            output_dir,
+            configuration_filename,
+            overwrite=overwrite,
+            replay=replay,
+            version=version,
+        )
+
+
+PathEx.EnsureDir(_project_dir)
 
 
 # ----------------------------------------------------------------------
-@app.command("Div")
-def Div(
-    x: int,
-    y: int,
-) -> None:
-    """Divides 1 value by another."""
-
-    sys.stdout.write(str(Math.Div(x, y)))
-
-
 # ----------------------------------------------------------------------
-@app.command("Version")
-def Version() -> None:
-    """Prints the version of the package."""
+# ----------------------------------------------------------------------
+def _ExecuteOutputDir(
+    output_dir: Path,
+    configuration_filename: Optional[Path],
+    *,
+    overwrite: bool,
+    replay: bool,
+    version: bool,
+) -> None:
+    if version:
+        sys.stdout.write(__version__)
+        return
 
-    sys.stdout.write(__version__)
+    cookiecutter(
+        str(_project_dir),
+        output_dir=str(output_dir),
+        config_file=str(configuration_filename) if configuration_filename is not None else None,
+        replay=replay,
+        overwrite_if_exists=overwrite,
+        accept_hooks=True,
+    )
 
 
 # ----------------------------------------------------------------------

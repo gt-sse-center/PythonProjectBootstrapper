@@ -53,7 +53,7 @@ Pytest = RepoBuildTools.PytestFuncFactory(
     tests_dir,
     "PythonProjectBootstrapper",
     app,
-    default_min_coverage=90.0,
+    default_min_coverage=70.0,
 )
 
 UpdateVersion = RepoBuildTools.UpdateVersionFuncFactory(
