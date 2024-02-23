@@ -1,4 +1,30 @@
 {
     "name": "<your name>",
-    "__empty_dir": ""
+    "email": "<your email>",
+
+    "project_description": "<your project description>",
+
+    "license": [
+        "MIT",
+        "Apache-2.0",
+        "BSD-3-Clause-Clear",
+        "GPL-3.0-or-later",
+        "BSL-1.0"
+    ],
+
+    "gist_id": "<your gist id>",
+
+    "github_url": "https://github.com",
+    "github_username": "<your github username>",
+    "github_project_name": "<your github repository>",
+    "pypi_project_name": "{{ cookiecutter.github_project_name }}",
+
+    "create_docker_image": "no",
+
+    "__empty_dir": "",
+
+    "__prompts__": {
+    },
+
+    "_extensions": ["local_extensions.pypi_string"]
 }

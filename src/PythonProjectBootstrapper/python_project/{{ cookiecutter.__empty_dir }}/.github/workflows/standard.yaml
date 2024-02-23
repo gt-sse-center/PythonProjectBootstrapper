@@ -1,12 +1,7 @@
-# ----------------------------------------------------------------------
-#
-# Copyright (c) 2024 Scientific Software Engineering Center at Georgia Tech
-# Distributed under the MIT License.
-#
-# ----------------------------------------------------------------------
+{%- include "python_header.py" -%}
 name: "Standard"
 
-run-name: ${{ github.run_number }} [${{ github.actor }}] on ${{ github.ref_name }}
+run-name: {% raw %}${{ github.run_number }} [${{ github.actor }}] on ${{ github.ref_name }}{% endraw %}
 
 on:
   pull_request:
@@ -47,22 +42,22 @@ jobs:
 
     uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python.yaml@main
     with:
-      operating_system: ${{ matrix.os }}
-      python_version: ${{ matrix.python_version }}
+      operating_system: {% raw %}${{ matrix.os }}{% endraw %}
+      python_version: {% raw %}${{ matrix.python_version }}{% endraw %}
 
   # ----------------------------------------------------------------------
   package_coverage:
     needs: validate
 
     name: Postprocess Coverage Info
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    if: {% raw %}${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}{% endraw %}
 
     uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_package_python_coverage.yaml@main
     with:
-      gist_id: 2f9d770d13e3a148424f374f74d41f4b
-      gist_filename: PythonProjectBootstrapper_coverage.json
+      gist_id: {{ cookiecutter.gist_id }}
+      gist_filename: {{ cookiecutter.github_project_name }}_coverage.json
     secrets:
-      GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
+      GIST_TOKEN: {% raw %}${{ secrets.GIST_TOKEN }}{% endraw %}
 
   # ----------------------------------------------------------------------
   create_package:
@@ -88,8 +83,8 @@ jobs:
 
     uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_create_python_package.yaml@main
     with:
-      operating_system: ${{ matrix.os }}
-      python_version: ${{ matrix.python_version }}
+      operating_system: {% raw %}${{ matrix.os }}{% endraw %}
+      python_version: {% raw %}${{ matrix.python_version }}{% endraw %}
 
   # ----------------------------------------------------------------------
   validate_package:
@@ -115,9 +110,9 @@ jobs:
 
     uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python_package.yaml@main
     with:
-      operating_system: ${{ matrix.os }}
-      python_version: ${{ matrix.python_version }}
-      validation_command: python -c "from PythonProjectBootstrapper import __version__; print(__version__); from PythonProjectBootstrapper import EntryPoint; print(EntryPoint)"
+      operating_system: {% raw %}${{ matrix.os }}{% endraw %}
+      python_version: {% raw %}${{ matrix.python_version }}{% endraw %}
+      validation_command: python -c "from {{ cookiecutter.pypi_project_name }} import __version__; print(__version__)"
 
   # ----------------------------------------------------------------------
   create_binary:
@@ -139,8 +134,8 @@ jobs:
 
     uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_create_python_binary.yaml@main
     with:
-      operating_system: ${{ matrix.os }}
-      python_version: ${{ matrix.python_version }}
+      operating_system: {% raw %}${{ matrix.os }}{% endraw %}
+      python_version: {% raw %}${{ matrix.python_version }}{% endraw %}
 
   # ----------------------------------------------------------------------
   validate_binary:
@@ -162,18 +157,50 @@ jobs:
 
     uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python_binary.yaml@main
     with:
-      operating_system: ${{ matrix.os }}
-      python_version: ${{ matrix.python_version }}
-      validation_command: PythonProjectBootstrapper this_value_is_ignored --version
+      operating_system: {% raw %}${{ matrix.os }}{% endraw %}
+      python_version: {% raw %}${{ matrix.python_version }}{% endraw %}
+      validation_command: {{ cookiecutter.pypi_project_name }} Version
+
+{% if cookiecutter.create_docker_image %}
+# ----------------------------------------------------------------------
+  create_docker_image:
+    needs:
+      - validate_package
+      - validate_binary
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        python_version:
+          - "3.12"
+          - "3.11"
+          - "3.10"
+          # - "3.9"  # Not supported
+          # - "3.8"  # Not supported
+
+    name: Create Docker Image
+
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_create_docker_image.yaml@main
+    with:
+      operating_system: ubuntu-latest
+      python_version: {% raw %}${{ matrix.python_version }}{% endraw %}
+      name_suffix: {% raw %}-${{ matrix.python_version }}{% endraw %}
+      bootstrap_args: ""
+{% endif %}
 
   # ----------------------------------------------------------------------
   publish:
     needs:
+{% if cookiecutter.create_docker_image %}
+      - create_docker_image
+{% else %}
       - validate_package
       - validate_binary
+{% endif %}
 
     name: Publish
 
     uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_publish_python.yaml@main
     secrets:
-      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+      PYPI_TOKEN: {% raw %}${{ secrets.PYPI_TOKEN }}{% endraw %}

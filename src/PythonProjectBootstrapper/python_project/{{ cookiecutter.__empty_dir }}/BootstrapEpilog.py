@@ -1,13 +1,9 @@
-# ----------------------------------------------------------------------
-# |
-# |  Copyright (c) 2024 Scientific Software Engineering Center at Georgia Tech
-# |  Distributed under the MIT License.
-# |
-# ----------------------------------------------------------------------
+{%- include "python_header.py" -%}
 # pylint: disable=missing-module-docstring
 
 import subprocess
 import sys
+
 
 # Parse the arguments
 is_debug = False
@@ -16,9 +12,8 @@ is_verbose = False
 is_package = False
 no_cache = False
 
-for arg in sys.argv[
-    2:
-]:  # First arg is the script name, second arg is the name of the shell script to write to
+# First arg is the script name, second arg is the name of the shell script to write to
+for arg in sys.argv[2:]:
     if arg == "--debug":
         is_debug = True
     elif arg == "--force":
@@ -30,7 +25,7 @@ for arg in sys.argv[
     elif arg == "--no-cache":
         no_cache = True
     else:
-        raise Exception("Unrecognized argument: {}".format(arg))
+        raise Exception("'{}' is not a recognized argument.".format(arg))
 
 if is_debug:
     is_verbose = True

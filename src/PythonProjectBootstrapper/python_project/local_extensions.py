@@ -4,16 +4,10 @@
 # |  Distributed under the MIT License.
 # |
 # ----------------------------------------------------------------------
-"""Unit tests for EntryPoint.py"""
-
-from typer.testing import CliRunner
-
-from PythonProjectBootstrapper import __version__
-from PythonProjectBootstrapper.EntryPoint import app
+from cookiecutter.utils import simple_filter
 
 
 # ----------------------------------------------------------------------
-def test_Version():
-    result = CliRunner().invoke(app, ["this_value_is_ignored", "--version"])
-    assert result.exit_code == 0
-    assert result.stdout == __version__
+@simple_filter
+def pypi_string(value):
+    return value.lower().replace("_", "-")
