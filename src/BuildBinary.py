@@ -1,11 +1,14 @@
 # ----------------------------------------------------------------------
-# SPDX-FileCopyrightText: 2024 Scientific Software Engineering Center <ssec-dev@gatech.edu>
-# SPDX-License-Identifier: MIT
+# |
+# |  Copyright (c) 2024 Scientific Software Engineering Center at Georgia Tech
+# |  Distributed under the MIT License.
+# |
 # ----------------------------------------------------------------------
 """Builds the binary for this project."""
 
 import datetime
 import importlib
+import os
 import textwrap
 
 from pathlib import Path, PurePath
@@ -75,12 +78,25 @@ else:
 # ----------------------------------------------------------------------
 _include_files: list[tuple[str, str]] = []
 
-for child in PathEx.EnsureDir(
-    _this_dir / "PythonProjectBootstrapper" / "python_project" / "hooks"
-).iterdir():
-    relative_path = PurePath(*child.parts[len(_this_dir.parts) :])
+_project_root = PathEx.EnsureDir(_this_dir / "PythonProjectBootstrapper" / "python_project")
+_lib_path = PurePath("lib")
 
-    _include_files.append((relative_path.as_posix(), (PurePath("lib") / relative_path).as_posix()))
+for root, _, filenames in os.walk(_project_root):
+    if not filenames:
+        continue
+
+    root_path = Path(root)
+    relative_path = PurePath(*root_path.parts[len(_this_dir.parts) :])
+
+    for filename in filenames:
+        fullpath = root_path / filename
+
+        _include_files.append(
+            (
+                (relative_path / filename).as_posix(),
+                (_lib_path / relative_path / filename).as_posix(),
+            )
+        )
 
 
 # ----------------------------------------------------------------------

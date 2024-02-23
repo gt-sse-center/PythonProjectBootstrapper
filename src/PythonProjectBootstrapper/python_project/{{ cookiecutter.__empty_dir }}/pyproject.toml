@@ -1,0 +1,167 @@
+{%- include "python_header.py" -%}
+# https://packaging.python.org/en/latest/specifications/declaring-project-metadata/
+
+[build-system]
+requires = ["setuptools >= 63.0"]
+build-backend = "setuptools.build_meta"
+
+# ----------------------------------------------------------------------
+# |
+# |  Project
+# |
+# ----------------------------------------------------------------------
+[project]
+name = "{{ cookiecutter.pypi_project_name }}"
+description = "{{ cookiecutter.project_description }}"
+
+license = { text = "{{ cookiecutter.license }}" }
+
+authors = [
+    { name = "{{ cookiecutter.name }}", email = "{{ cookiecutter.email }}" },
+]
+
+keywords = [
+    # TODO
+]
+
+# https://pypi.org/classifiers/
+classifiers = [
+    # TODO
+    "License :: OSI Approved :: {{ cookiecutter.license }} License",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    # TODO
+    "typer ~= 0.9"
+]
+
+dynamic = [
+    "version",
+]
+
+readme = "README.md"
+
+[project.optional-dependencies]
+dev = [
+    "dbrownell_DevTools",
+]
+
+package = [
+    "build == 1.*",
+    "cx_Freeze == 6.*",
+    "twine == 4.*",
+]
+
+[project.urls]
+Homepage = "{{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}"
+Documentation = "{{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}"
+Repository = "{{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}"
+
+[project.scripts]
+{{ cookiecutter.pypi_project_name }} = "{{ cookiecutter.pypi_project_name }}:EntryPoint.app"
+
+
+# ----------------------------------------------------------------------
+# |
+# |  black
+# |
+# ----------------------------------------------------------------------
+[tool.black]
+line-length = 100
+
+# ----------------------------------------------------------------------
+# |
+# |  pylint
+# |
+# ----------------------------------------------------------------------
+[tool.pylint.basic]
+class-const-naming-style = "any"
+function-naming-style = "PascalCase"
+good-names = [
+    "i",
+    "j",
+    "k",
+    "ex",
+    "Run",
+    "_",
+    "dm",                                   # added
+    "f",                                    # added
+]
+method-naming-style = "any"
+module-naming-style = "PascalCase"
+
+[tool.pylint.design]
+max-args = 10
+max-parents = 15
+
+[tool.pylint.main]
+ignore-patterns = [
+    # Note that the pylint vscode extension has trouble with wrapping these patterns in quotes
+    # (which is required to parse the file correctly). Because of this, each pattern must be
+    # converted to a glob pattern and specified in the pylint vscode settings as well.
+    "^.+?Tests/.*$",
+]
+
+[tool.pylint."messages control"]
+disable = [
+    "raw-checker-failed",
+    "bad-inline-option",
+    "locally-disabled",
+    "file-ignored",
+    "suppressed-message",
+    "useless-suppression",
+    "deprecated-pragma",
+    "use-symbolic-message-instead",
+    "assignment-from-no-return",            # added
+    "broad-except",                         # added
+    "broad-exception-raised",               # added
+    "cell-var-from-loop",                   # added
+    "consider-using-f-string",              # added
+    "import-outside-toplevel",              # added
+    "line-too-long",                        # added
+    "missing-function-docstring",           # added
+    "subprocess-run-check",                 # added
+    "super-with-arguments",                 # added
+    "too-few-public-methods",               # added
+    "unnecessary-lambda-assignment",        # added
+    "unspecified-encoding",                 # added
+]
+
+# ----------------------------------------------------------------------
+# |
+# |  pyright
+# |
+# ----------------------------------------------------------------------
+[tool.pyright]
+exclude = [
+    "**/*Tests/*",
+    "**/Generated/*",
+]
+
+reportMissingImports = true
+reportMissingTypeStubs = false
+
+# ----------------------------------------------------------------------
+# |
+# |  pytest
+# |
+# ----------------------------------------------------------------------
+[tool.pytest.ini_options]
+python_files = [
+    "**/*Test.py",
+]
+
+# ----------------------------------------------------------------------
+# |
+# |  setuptools
+# |
+# ----------------------------------------------------------------------
+[tool.setuptools.dynamic]
+version = { attr = "{{ cookiecutter.pypi_project_name }}.__version__" }

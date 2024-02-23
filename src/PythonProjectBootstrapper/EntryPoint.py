@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  Copyright Scientific Software Engineering Center at Georgia Tech 2024
+# |  Copyright (c) 2024 Scientific Software Engineering Center at Georgia Tech
 # |  Distributed under the MIT License.
 # |
 # ----------------------------------------------------------------------
@@ -18,6 +18,11 @@ from typer.core import TyperGroup  # type: ignore [import-untyped]
 from cookiecutter.main import cookiecutter
 from dbrownell_Common import PathEx
 from PythonProjectBootstrapper import __version__
+
+# The following imports are used in cookiecutter hooks. Import them here to
+# ensure that they are frozen when creating binaries,
+import shutil  # pylint: disable=unused-import, wrong-import-order
+import textwrap  # pylint: disable=unused-import, wrong-import-order
 
 
 # ----------------------------------------------------------------------
@@ -47,9 +52,6 @@ _configuration_filename_option = typer.Option(
     help="Filename that contains template configuration values; see https://cookiecutter.readthedocs.io/en/stable/advanced/user_config.html for more info.",
 )
 
-_overwrite_option = typer.Option(
-    "--overwrite", help="Overwrite the contents of the output directory if it exists."
-)
 _replay_option = typer.Option(
     "--replay", help="Do not prompt for input, instead read from saved json."
 )
@@ -79,7 +81,6 @@ if getattr(sys, "frozen", False):
             Path, typer.Argument(resolve_path=True, help="Directory to populate.")
         ],
         configuration_filename: Annotated[Optional[Path], _configuration_filename_option] = None,
-        overwrite: Annotated[bool, _overwrite_option] = False,
         replay: Annotated[bool, _replay_option] = False,
         version: Annotated[bool, _version_option] = False,
     ) -> None:
@@ -93,7 +94,6 @@ if getattr(sys, "frozen", False):
         _ExecuteOutputDir(
             output_dir,
             configuration_filename,
-            overwrite=overwrite,
             replay=replay,
             version=version,
         )
@@ -110,14 +110,12 @@ else:
             Path, typer.Argument(file_okay=False, resolve_path=True, help="Directory to populate.")
         ],
         configuration_filename: Annotated[Optional[Path], _configuration_filename_option] = None,
-        overwrite: Annotated[bool, _overwrite_option] = False,
         replay: Annotated[bool, _replay_option] = False,
         version: Annotated[bool, _version_option] = False,
     ) -> None:
         _ExecuteOutputDir(
             output_dir,
             configuration_filename,
-            overwrite=overwrite,
             replay=replay,
             version=version,
         )
@@ -133,7 +131,6 @@ def _ExecuteOutputDir(
     output_dir: Path,
     configuration_filename: Optional[Path],
     *,
-    overwrite: bool,
     replay: bool,
     version: bool,
 ) -> None:
@@ -146,7 +143,7 @@ def _ExecuteOutputDir(
         output_dir=str(output_dir),
         config_file=str(configuration_filename) if configuration_filename is not None else None,
         replay=replay,
-        overwrite_if_exists=overwrite,
+        overwrite_if_exists=True,
         accept_hooks=True,
     )
 

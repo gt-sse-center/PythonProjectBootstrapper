@@ -1,10 +1,5 @@
-# ----------------------------------------------------------------------
-# |
-# |  Copyright (c) 2024 Scientific Software Engineering Center at Georgia Tech
-# |  Distributed under the MIT License.
-# |
-# ----------------------------------------------------------------------
-"""Build tasks for this python module."""
+{%- include "python_header.py" -%}
+"""Build tasks for this python project."""
 
 import sys
 
@@ -13,9 +8,8 @@ from pathlib import Path
 import typer
 
 from dbrownell_Common import PathEx
-from typer.core import TyperGroup
-
 from dbrownell_DevTools.RepoBuildTools import Python as RepoBuildTools
+from typer.core import TyperGroup
 
 
 # ----------------------------------------------------------------------
@@ -39,16 +33,12 @@ app = typer.Typer(
 # ----------------------------------------------------------------------
 this_dir = PathEx.EnsureDir(Path(__file__).parent)
 src_dir = PathEx.EnsureDir(this_dir / "src")
-package_dir = PathEx.EnsureDir(src_dir / "PythonProjectBootstrapper")
+package_dir = PathEx.EnsureDir(src_dir / "{{ cookiecutter.pypi_project_name }}")
 tests_dir = PathEx.EnsureDir(this_dir / "tests")
 
 
 # ----------------------------------------------------------------------
-Black = RepoBuildTools.BlackFuncFactory(
-    this_dir,
-    app,
-    '--force-exclude "{{ cookiecutter.__empty_dir }}"',
-)
+Black = RepoBuildTools.BlackFuncFactory(this_dir, app)
 
 Pylint = RepoBuildTools.PylintFuncFactory(
     package_dir,
@@ -60,7 +50,7 @@ Pytest = RepoBuildTools.PytestFuncFactory(
     tests_dir,
     package_dir.name,
     app,
-    default_min_coverage=70.0,
+    default_min_coverage=90.0,
 )
 
 UpdateVersion = RepoBuildTools.UpdateVersionFuncFactory(
@@ -74,11 +64,14 @@ Publish = RepoBuildTools.PublishFuncFactory(this_dir, app)
 
 BuildBinary = RepoBuildTools.BuildBinaryFuncFactory(
     this_dir,
-    src_dir / "BuildBinary.py",
+    PathEx.EnsureFile(src_dir / "BuildBinary.py"),
     app,
 )
 
-CreateDockerImage = RepoBuildTools.CreateDockerImageFuncFactory(this_dir, app)
+CreateDockerImage = RepoBuildTools.CreateDockerImageFuncFactory(
+    this_dir,
+    app,
+)
 
 
 # ----------------------------------------------------------------------
