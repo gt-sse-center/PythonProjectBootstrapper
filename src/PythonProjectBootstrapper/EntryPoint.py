@@ -8,6 +8,7 @@
 
 import sys
 
+from enum import Enum
 from pathlib import Path
 from typing import Annotated, Optional
 
@@ -44,6 +45,15 @@ app = typer.Typer(
 
 
 # ----------------------------------------------------------------------
+class ProjectType(str, Enum):
+    python_project = "python_project"
+
+
+# ----------------------------------------------------------------------
+_project_argument = typer.Argument(
+    help="Project to build.",
+)
+
 _configuration_filename_option = typer.Option(
     "--configuration-filename",
     dir_okay=False,
@@ -65,9 +75,7 @@ _version_option = typer.Option("--version", help="Display the current version an
 #   - running as a frozen binary.
 #
 if getattr(sys, "frozen", False):
-    _project_dir = (
-        Path(sys.executable).parent / "lib" / "PythonProjectBootstrapper" / "python_project"
-    )
+    _project_root_dir = Path(sys.executable).parent / "lib" / "PythonProjectBootstrapper"
 
     # This is admittedly very strange. cookiecutter apparently uses sys.argv[0] to invoke
     # python hooks. Within a binary, sys.argv[0] will point back to this file. So, create
@@ -77,6 +85,7 @@ if getattr(sys, "frozen", False):
     # ----------------------------------------------------------------------
     @app.command()
     def FrozenExecute(
+        project: Annotated[ProjectType, _project_argument],
         output_dir: Annotated[
             Path, typer.Argument(resolve_path=True, help="Directory to populate.")
         ],
@@ -92,6 +101,7 @@ if getattr(sys, "frozen", False):
             return
 
         _ExecuteOutputDir(
+            project,
             output_dir,
             configuration_filename,
             replay=replay,
@@ -101,11 +111,12 @@ if getattr(sys, "frozen", False):
     # ----------------------------------------------------------------------
 
 else:
-    _project_dir = Path(__file__).parent / "python_project"
+    _project_root_dir = Path(__file__).parent
 
     # ----------------------------------------------------------------------
     @app.command()
     def StandardExecute(
+        project: Annotated[ProjectType, _project_argument],
         output_dir: Annotated[
             Path, typer.Argument(file_okay=False, resolve_path=True, help="Directory to populate.")
         ],
@@ -114,6 +125,7 @@ else:
         version: Annotated[bool, _version_option] = False,
     ) -> None:
         _ExecuteOutputDir(
+            project,
             output_dir,
             configuration_filename,
             replay=replay,
@@ -121,13 +133,14 @@ else:
         )
 
 
-PathEx.EnsureDir(_project_dir)
+PathEx.EnsureDir(_project_root_dir)
 
 
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 def _ExecuteOutputDir(
+    project: ProjectType,
     output_dir: Path,
     configuration_filename: Optional[Path],
     *,
@@ -139,7 +152,7 @@ def _ExecuteOutputDir(
         return
 
     cookiecutter(
-        str(_project_dir),
+        str(PathEx.EnsureDir(_project_root_dir / project.value)),
         output_dir=str(output_dir),
         config_file=str(configuration_filename) if configuration_filename is not None else None,
         replay=replay,
