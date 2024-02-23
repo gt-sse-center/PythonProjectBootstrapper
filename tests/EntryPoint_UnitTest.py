@@ -14,6 +14,6 @@ from PythonProjectBootstrapper.EntryPoint import app
 
 # ----------------------------------------------------------------------
 def test_Version():
-    result = CliRunner().invoke(app, ["this_value_is_ignored", "--version"])
+    result = CliRunner().invoke(app, ["python_project", "<output_dir>", "--version"])
     assert result.exit_code == 0
     assert result.stdout == __version__
