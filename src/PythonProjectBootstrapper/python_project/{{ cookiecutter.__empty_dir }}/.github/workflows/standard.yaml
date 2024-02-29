@@ -187,6 +187,8 @@ jobs:
       python_version: {% raw %}${{ matrix.python_version }}{% endraw %}
       name_suffix: {% raw %}-${{ matrix.python_version }}{% endraw %}
       bootstrap_args: ""
+      docker_description: "{{ cookiecutter.pypi_project_name }} - {% raw %}${{ matrix.python_version }}{% endraw %}"
+      push_image_as_package: true
 {% endif %}
 
   # ----------------------------------------------------------------------
