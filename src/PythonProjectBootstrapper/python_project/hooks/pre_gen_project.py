@@ -6,6 +6,8 @@
 # ----------------------------------------------------------------------
 errors: list[str] = []
 
+# BugBug: Ensure that the dir has a .git directory
+
 # fmt: off
 if "{{ cookiecutter.name }}".startswith("<") and "{{ cookiecutter.name }}".endswith(">"):
     errors.append('name ("{{ cookiecutter.name }}")')
