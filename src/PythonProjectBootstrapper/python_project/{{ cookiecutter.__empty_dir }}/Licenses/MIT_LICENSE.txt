@@ -1,3 +1,5 @@
+MIT LICENSE
+
 Copyright (c) {% now 'utc', '%Y' %} {{ cookiecutter.name }}
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

@@ -1,0 +1,89 @@
+# Values in this file will overwrite values in `cookiecutter.json` when `../../PopulateCookiecutterPrompts.py` is run.
+
+name: |-
+  Please enter your name.
+
+  This value will be used in:
+      - The copyright header for source files
+      - Metadata for the generated python package
+      - Metadata for the generated python binary
+
+email: |-
+  Please enter your email address.
+
+  This value will be used in:
+      - Metadata for the generated python package
+      - Metadata for the generated python binary
+
+project_description: |-
+  Please enter a short description of your project (less than 100 characters).
+
+  This value will be used in:
+      - Metadata for the generated python package
+      - Metadata for the generated python binary
+
+license: |-
+  Please enter the license you would like to use for your project. https://choosealicense.com/ is a
+  good resource that helps you choose the best license for your project.
+
+  This value will be used in:
+      - Population of the License.txt file (or equivalent)
+      - The copyright header for source files
+      - Metadata for the generated python package
+      - Metadata for the generated python binary
+      - Metadata for the generated docker image (if applicable)
+
+gist_id: |-
+  Please enter the GitHub gist id for use with this project.
+
+  GitHub defines a gist as "a simple way to share snippets and pastes with others." The generated
+  python project will use a gist to store information dynamically generated during the build (for
+  example code coverage information) that can be retrieved at a later time (for example, to display
+  a code coverage badge in the project's README.md file).
+
+  To create a gist:
+      1. Go to https://gist.github.com/
+      2. Enter the following values in their respective fields:
+
+          Gist description...:                Gist used by GitHub Action workflows to store and retrieve dynamic information (oftentimes used to create and display badges).
+          Filename including extension...:    README.md
+          File contents:                      Gist used by GitHub Action workflows to store and retrieve dynamic information (oftentimes used to create and display badges).
+
+      3. Click the "Create secret gist" button
+      4. Copy the gist id (this will be the hex string at the end of the url associated with the gist
+         that was just created). It will look something like:
+
+            https://gist.github.com/<github username>/4c10281ff1abc26cafcb9a5f9a8a443e
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                             This is the gist id
+
+github_url: |-
+  Please enter the GitHub URL. The default value should be used unless you are running on an GitHub
+  Enterprise instance.
+
+      https://github.com/username/projectname
+      ^^^^^^^^^^^^^^^^^^
+      This is the GitHub URL
+
+github_username: |-
+  Please enter your GitHub username.
+
+      https://github.com/username/projectname
+                         ^^^^^^^^
+                         This is the GitHub username
+
+github_project_name: |-
+  Please enter the name of your GitHub project that corresponds to the output directory.
+
+      https://github.com/username/projectname
+                                  ^^^^^^^^^^^
+                                  This is the GitHub project name
+
+pypi_project_name: |-
+  Please enter the name of your project as it will appear on PyPI (https://pypi.org). This
+  name cannot be associated with any other project on PyPI.
+
+create_docker_image: |-
+  Would you like the GitHub Action workflows to create docker images of the development environment?
+  These images can be used to produce exact results across different commits made to the repository
+  over time (which is especially valuable when writing scientific software).
