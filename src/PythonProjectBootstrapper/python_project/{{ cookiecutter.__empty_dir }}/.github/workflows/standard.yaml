@@ -189,6 +189,7 @@ jobs:
       bootstrap_args: ""
       docker_description: "{{ cookiecutter.pypi_project_name }} - {% raw %}${{ matrix.python_version }}{% endraw %}"
       push_image_as_package: true
+      container_registry_username: {{ cookiecutter.github_username }}
 {% endif %}
 
   # ----------------------------------------------------------------------
@@ -204,5 +205,7 @@ jobs:
     name: Publish
 
     uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_publish_python.yaml@main
+    with:
+      release_sources_configuration_filename: .github/release_sources.yaml
     secrets:
       PYPI_TOKEN: {% raw %}${{ secrets.PYPI_TOKEN }}{% endraw %}
