@@ -167,4 +167,4 @@ python_files = [
 version = { attr = "PythonProjectBootstrapper.__version__" }
 
 [tool.setuptools.package-data]
-"PythonProjectBootstrapper.python_project" = ["**"]
+"PythonProjectBootstrapper.package" = ["**"]
