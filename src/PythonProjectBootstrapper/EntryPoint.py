@@ -46,7 +46,7 @@ app = typer.Typer(
 
 # ----------------------------------------------------------------------
 class ProjectType(str, Enum):
-    python_project = "python_project"
+    package = "package"
 
 
 # ----------------------------------------------------------------------

@@ -164,7 +164,7 @@ jobs:
     with:
       operating_system: ${{ matrix.os }}
       python_version: ${{ matrix.python_version }}
-      validation_command: PythonProjectBootstrapper python_project this_value_is_ignored --version
+      validation_command: PythonProjectBootstrapper package this_value_is_ignored --version
 
   # ----------------------------------------------------------------------
   publish:

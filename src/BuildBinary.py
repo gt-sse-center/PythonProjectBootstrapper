@@ -78,7 +78,7 @@ else:
 # ----------------------------------------------------------------------
 _include_files: list[tuple[str, str]] = []
 
-_project_root = PathEx.EnsureDir(_this_dir / "PythonProjectBootstrapper" / "python_project")
+_project_root = PathEx.EnsureDir(_this_dir / "PythonProjectBootstrapper" / "package")
 _lib_path = PurePath("lib")
 
 for root, _, filenames in os.walk(_project_root):
