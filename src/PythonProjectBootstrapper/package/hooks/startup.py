@@ -50,7 +50,7 @@ def Execute(
     print(
         Panel(
             panel_content.rstrip(),
-            border_style="red",
+            border_style="green",
             padding=1,
             title="Python Package",
         ),
