@@ -13,7 +13,7 @@ import textwrap
 from pathlib import Path
 
 from dbrownell_Common import PathEx
-from rich import print
+from rich import print  # pylint: disable=redefined-builtin
 from rich.panel import Panel
 
 
