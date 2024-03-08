@@ -6,6 +6,7 @@
 # ----------------------------------------------------------------------
 """This file serves as an example of how to create scripts that can be invoked from the command line once the package is installed."""
 
+import importlib
 import sys
 
 from enum import Enum
@@ -17,6 +18,7 @@ import typer
 from typer.core import TyperGroup  # type: ignore [import-untyped]
 
 from cookiecutter.main import cookiecutter
+from dbrownell_Common.ContextlibEx import ExitStack
 from dbrownell_Common import PathEx
 from PythonProjectBootstrapper import __version__
 
@@ -65,6 +67,7 @@ _configuration_filename_option = typer.Option(
 _replay_option = typer.Option(
     "--replay", help="Do not prompt for input, instead read from saved json."
 )
+_yes_option = typer.Option("--yes", help="Answer yes to all prompts.")
 _version_option = typer.Option("--version", help="Display the current version and exit.")
 
 
@@ -91,6 +94,7 @@ if getattr(sys, "frozen", False):
         ],
         configuration_filename: Annotated[Optional[Path], _configuration_filename_option] = None,
         replay: Annotated[bool, _replay_option] = False,
+        yes: Annotated[bool, _yes_option] = False,
         version: Annotated[bool, _version_option] = False,
     ) -> None:
         if output_dir.is_file():
@@ -105,6 +109,7 @@ if getattr(sys, "frozen", False):
             output_dir,
             configuration_filename,
             replay=replay,
+            yes=yes,
             version=version,
         )
 
@@ -122,6 +127,7 @@ else:
         ],
         configuration_filename: Annotated[Optional[Path], _configuration_filename_option] = None,
         replay: Annotated[bool, _replay_option] = False,
+        yes: Annotated[bool, _yes_option] = False,
         version: Annotated[bool, _version_option] = False,
     ) -> None:
         _ExecuteOutputDir(
@@ -129,6 +135,7 @@ else:
             output_dir,
             configuration_filename,
             replay=replay,
+            yes=yes,
             version=version,
         )
 
@@ -145,14 +152,29 @@ def _ExecuteOutputDir(
     configuration_filename: Optional[Path],
     *,
     replay: bool,
+    yes: bool,
     version: bool,
 ) -> None:
     if version:
         sys.stdout.write(__version__)
         return
 
+    project_dir = PathEx.EnsureDir(_project_root_dir / project.value)
+
+    # Does the project have a startup script? If so, invoke it dynamically.
+    potential_startup_script = project_dir / "hooks" / "startup.py"
+    if potential_startup_script.is_file():
+        sys.path.insert(0, str(potential_startup_script.parent))
+        with ExitStack(lambda: sys.path.pop(0)):
+            module = importlib.import_module(potential_startup_script.stem)
+
+            execute_func = getattr(module, "Execute", None)
+            if execute_func:
+                if execute_func(project_dir, output_dir, yes=yes) is False:
+                    return
+
     cookiecutter(
-        str(PathEx.EnsureDir(_project_root_dir / project.value)),
+        str(project_dir),
         output_dir=str(output_dir),
         config_file=str(configuration_filename) if configuration_filename is not None else None,
         replay=replay,
