@@ -145,6 +145,15 @@ _prompts: dict[str, str] = {
         3. Click "Update secret"
         """,
     ),
+    "Update README.md": textwrap.dedent(
+        """\
+        In this step, we will update the README.md file with information about your project.
+
+        1. Edit README.md
+        2. Replace the "TODO" comment in the "Overview" section.
+        3. Replace the "TODO" comment in the "How to use {{ cookiecutter.github_project_name }}" section.
+        """,
+    ),
 }
 
 
