@@ -33,30 +33,6 @@ license: |-
       - Metadata for the generated python binary
       - Metadata for the generated docker image (if applicable)
 
-gist_id: |-
-  Please enter the GitHub gist id for use with this project.
-
-  GitHub defines a gist as "a simple way to share snippets and pastes with others." The generated
-  python project will use a gist to store information dynamically generated during the build (for
-  example code coverage information) that can be retrieved at a later time (for example, to display
-  a code coverage badge in the project's README.md file).
-
-  To create a gist:
-      1. Go to https://gist.github.com/
-      2. Enter the following values in their respective fields:
-
-          Gist description...:                Gist used by GitHub Action workflows to store and retrieve dynamic information (oftentimes used to create and display badges).
-          Filename including extension...:    README.md
-          File contents:                      Gist used by GitHub Action workflows to store and retrieve dynamic information (oftentimes used to create and display badges).
-
-      3. Click the "Create secret gist" button
-      4. Copy the gist id (this will be the hex string at the end of the url associated with the gist
-         that was just created). It will look something like:
-
-            https://gist.github.com/<github username>/4c10281ff1abc26cafcb9a5f9a8a443e
-                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                                                             This is the gist id
-
 github_url: |-
   Please enter the GitHub URL. The default value should be used unless you are running on an GitHub
   Enterprise instance.
@@ -82,6 +58,32 @@ github_project_name: |-
 pypi_project_name: |-
   Please enter the name of your project as it will appear on PyPI (https://pypi.org). This
   name cannot be associated with any other project on PyPI.
+
+gist_id: |-
+  Please enter the GitHub gist id for use with this project.
+
+  GitHub defines a gist as "a simple way to share snippets and pastes with others." The generated
+  python project will use a gist to store information dynamically generated during the build (for
+  example code coverage information) that can be retrieved at a later time (for example, to display
+  a code coverage badge in the project's README.md file).
+
+  To create a gist:
+      1. Go to https://gist.github.com/
+      2. Enter the following values in their respective fields:
+
+          Gist description...:                Gist used by GitHub Action workflows to store and retrieve dynamic information (oftentimes used to create and display badges).
+          Filename including extension...:    README.md
+          File contents:                      Gist used by GitHub Action workflows to store and retrieve dynamic information (oftentimes used to create and display badges).
+
+      3. Click the "Create secret gist" button
+      4. Copy the gist id (this will be the hex string at the end of the url associated with the gist
+         that was just created). It will look something like:
+
+            https://gist.github.com/<github username>/4c10281ff1abc26cafcb9a5f9a8a443e
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                             This is the gist id
+gist_username: |-
+  Please enter the username associated with your gist_id. In most cases, this will be the same as your GitHub username.
 
 create_docker_image: |-
   Would you like the GitHub Action workflows to create docker images of the development environment?

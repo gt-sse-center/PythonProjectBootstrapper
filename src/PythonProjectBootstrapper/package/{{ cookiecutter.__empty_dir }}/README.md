@@ -1,7 +1,7 @@
 # {{ cookiecutter.github_project_name }}
 
 [![CI]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/actions/workflows/standard.yaml/badge.svg?event=push)]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/actions/workflows/standard.yaml)
-[![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/{{ cookiecutter.github_username }}/{{ cookiecutter.gist_id }}/raw/{{ cookiecutter.github_project_name }}_coverage.json)]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/actions)
+[![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/{{ cookiecutter.gist_username }}/{{ cookiecutter.gist_id }}/raw/{{ cookiecutter.github_project_name }}_coverage.json)]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/actions)
 [![License](https://img.shields.io/github/license/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}?color=dark-green)]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/master/LICENSE.txt)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/y/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}?color=dark-green)]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/commits/main/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/{{ cookiecutter.pypi_project_name }}?color=dark-green)](https://pypi.org/project/{{ cookiecutter.pypi_project_name | pypi_string }}/)
@@ -19,136 +19,53 @@ TODO: Complete this section
 
 TODO: Complete this section
 
+## Installation via Executable
+
+Download an executable for Linux, MacOS, or Windows to use the functionality provided by this repository without a dependency on [Python](https://www.python.org).
+
+1. Download the archive for the latest release [here]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/releases/latest); the files will begin with `exe.` and contain the name of your operating system.
+2. Decompress the archive
+
 ## Installation via pip
+
+Install the {{ cookiecutter.pypi_project_name }} package via [pip](https://pip.pypa.io/en/stable/) (Package Installer for Python) to use it with your python code.
 
 `pip install {{ cookiecutter.pypi_project_name }}`
 
 ## Local Development
 
+Follow these steps to prepare the repository for local development activities.
+
 1) Clone this repository
 2) Bootstrap the local repository by running...
-    <table>
-        <tr>
-            <th>Operating System</th>
-            <th>Command</th>
-        </tr>
-        <tr>
-            <td>Linux / MacOS</td>
-            <td><code>Bootstrap.sh --package</code></td>
-        </tr>
-        <tr>
-            <td>Windows</td>
-            <td><code>Bootstrap.cmd --package</code></td>
-        </tr>
-    </table>
+    | Operating System | Command |
+    | --- | --- |
+    | Linux / MacOS | <p>Standard:<br/>`Bootstrap.sh`</p><p>Standard + packaging:<br/>`Bootstrap.sh --package`</p> |
+    | Windows | <p>Standard:<br/>`Bootstrap.cmd`</p><p>Standard + packaging:<br/>`Bootstrap.cmd --package`</p> |
 3) Activate the development environment by running...
-    <table>
-        <tr>
-            <th>Operating System</th>
-            <th>Command</th>
-        </tr>
-        <tr>
-            <td>Linux / MacOS</td>
-            <td><code>. ./Activate.sh</code></td>
-        </tr>
-        <tr>
-            <td>Windows</td>
-            <td><code>Activate.cmd</code></td>
-        </tr>
-    </table>
+    | Operating System | Command |
+    | --- | --- |
+    | Linux / MacOS | `. ./Activate.sh` |
+    | Windows | `Activate.cmd` |
 4) Invoke `Build.py`
-    <table>
-        <tr>
-            <th>Command</th>
-            <th>Description</th>
-            <th>Example</th>
-        </tr>
-        <tr>
-            <td><code>black</code></td>
-            <td>Validates that the source code is formatted by <a href="https://github.com/psf/black" target="_blank">black</a>.</td>
-            <td>
-                <p>
-                    Validation:<br/>
-                    <code>python Build.py black</code>
-                </p>
-                <p>
-                    Perform formatting:<br/>
-                    <code>python Build.py black --format</code>
-                </p>
-            </td>
-        </tr>
-        <tr>
-            <td><code>pylint</code></td>
-            <td>Validates the source code using <a href="https://github.com/pylint-dev/pylint" target="_blank">pylint</a>.</td>
-            <td><code>python Build.py pylint</code></td>
-        </tr>
-        <tr>
-            <td><code>pytest</code></py>
-            <td>Runs automated tests using <a href="https://docs.pytest.org/" target="_blank">pytest</a>.</td>
-            <td>
-                <p>
-                    Without Code Coverage:<br/>
-                    <code>python Build.py pytest</code>
-                </p>
-                <p>
-                    With Code Coverage:<br/>
-                    <code>python Build.py pytest --code-coverage</code>
-                </p>
-            </td>
-        </tr>
-        <tr>
-            <td><code>update_version</code></td>
-            <td>Updates the <a href="https://semver.org/" target="_blank">semantic version</a> of the package based on git commits using <a href="https://github.com/davidbrownell/AutoGitSemVer" target="_blank">AutoGitSemVer</a>.</td>
-            <td><code>python Build.py update_version</code></td>
-        </tr>
-        <tr>
-            <td><code>package</code></td>
-            <td>Creates a Python wheel package for distribution; outputs to the <code>/dist</code> directory.</td>
-            <td><code>python Build.py package</code></td>
-        </tr>
-        <tr>
-            <td><code>publish</code></td>
-            <td>Publishes a Python wheel package to <a href="https://pypi.org/" target="_blank">PyPi</a>.</td>
-            <td>
-                <p>
-                    <a href="https://test.pypi.org/" target="_blank">https://test.pypi.org</a>:<br/>
-                    <code>python Build.py publish &lt;your PyPi API token here&gt;</code>
-                </p>
-                <p>
-                    <a href="https://pypi.org/" target="_blank">https://pypi.org</a>:<br/>
-                    <code>python Build.py publish &lt;your PyPi API token here&gt; --production</code>
-                </p>
-            </td>
-        </tr>
-        <tr>
-            <td><code>build_binary</code></td>
-            <td>Builds an executable for your package that can be run on machines without a python installation; outputs to the <code>/build</code> directory.</td>
-            <td><code>python Build.py build_binary</code></td>
-        </tr>
-{%- if cookiecutter.create_docker_image -%}
-        <tr>
-            <td><code>create_docker_image</code></td>
-            <td>Creates a <a href="https://www.docker.com/" target="_blank">Docker</a> image based on the current development environment. This supports the "Reusable" aspect of <a href="https://www.go-fair.org/fair-principles/" target="_blank">FAIR principles</a> by creating a snapshot of the repository and all of its dependencies as they exist in a single moment in time.</td>
-            <td><code>python Build.py create_docker_image</code></td>
-        </tr>
+    | Command | Description | Example | Notes |
+    | --- | --- | --- | --- |
+    | `black` | Validates that the source code is formatted by [black](https://github.com/psf/black). | <p>Validation:<br/>`python Build.py black`</p><p>Perform formatting:<br/>`python Build.py black --format`</p> | |
+    | `pylint` | Validates the source code using [pylint](https://github.com/pylint-dev/pylint). | `python Build.py pylint` | |
+    | `pytest` | Runs automated tests using [pytest](https://docs.pytest.org/). | <p>Without Code Coverage:<br/>`python Build.py pytest`</p><p>With Code Coverage:<br/>`python Build.py pytest --code-coverage`</p> | |
+    | `update_version` | Updates the [semantic version](https://semver.org/) of the package based on git commits using [AutoGitSemVer](https://github.com/davidbrownell/AutoGitSemVer). | `python Build.py update_version` | |
+    | `package` | Creates a Python wheel package for distribution; outputs to the `/dist` directory. | `python Build.py package` | Requires `--package` when bootstrapping in step #2. |
+    | `publish` | Publishes a Python wheel package to [PyPi](https://pypi.org/). | <p>https://test.pypi.org:<br/>`python Build.py publish`</p><p>https://pypi.org:<br/>`python Build.py publish --production`</p> | Requires `--package` when bootstrapping in step #2. |
+    | `build_binary` | Builds an executable for your package that can be run on machines without a python installation; outputs to the `/build` directory. | `python Build.py build_binary` | Requires `--package` when bootstrapping in step #2. |
+{%- if cookiecutter.create_docker_image %}
+    | `create_docker_image` | Creates a [Docker](https://www.docker.com/) image based on the current development environment. This supports the "Reusable" aspect of [FAIR principles](https://www.go-fair.org/fair-principles/) by creating a snapshot of the repository and all of its dependencies as they exist in a single moment in time. | `python Build.py create_docker_image` | Requires docker. |
 {% endif %}
-    </table>
 
-5) [Optional] Deactivate the development environment by running:
-    <table>
-        <tr>
-            <th>Operating System</th>
-            <th>Command</th>
-        </tr>
-        <tr>
-            <td>Linux / MacOS</td>
-            <td><code>. ./Deactivate.sh</code></td>
-        </tr>
-        <tr>
-            <td>Windows</td>
-            <td><code>Deactivate.cmd</code></td>
-        </tr>
-    </table>
+5) [Optional] Deactivate the development environment by running...
+    | Operating System | Command |
+    | --- | --- |
+    | Linux / MacOS | `. ./Deactivate.sh` |
+    | Windows | `Deactivate.cmd` |
 
 ## License
 
