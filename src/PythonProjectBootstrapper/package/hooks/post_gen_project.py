@@ -179,7 +179,7 @@ def UpdateLicenseFile():
 # ----------------------------------------------------------------------
 def DisplayPrompts():
     border_colors = itertools.cycle(
-        ["red", "green", "yellow", "blue", "magenta", "cyan"],
+        ["green", "yellow", "blue", "magenta", "cyan"],
     )
 
     for prompt_index, (title, prompt) in enumerate(_prompts.items()):
