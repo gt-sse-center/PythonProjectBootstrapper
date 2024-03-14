@@ -34,22 +34,24 @@ license: |-
       - Metadata for the generated docker image (if applicable)
 
 github_url: |-
-  Please enter the GitHub URL. The default value should be used unless you are running on an GitHub
-  Enterprise instance.
+  Please enter the GitHub URL. You should use the URL to your GitHub repository as a guide when
+  specifying this value.
 
       https://github.com/username/projectname
       ^^^^^^^^^^^^^^^^^^
       This is the GitHub URL
 
 github_username: |-
-  Please enter your GitHub username.
+  Please enter your GitHub username. You should use the URL to your GitHub repository as a guide when
+  specifying this value.
 
       https://github.com/username/projectname
                          ^^^^^^^^
                          This is the GitHub username
 
 github_project_name: |-
-  Please enter the name of your GitHub project that corresponds to the output directory.
+  Please enter your GitHub project name. You should use the URL to your GitHub repository as a guide
+  when specifying this value.
 
       https://github.com/username/projectname
                                   ^^^^^^^^^^^
