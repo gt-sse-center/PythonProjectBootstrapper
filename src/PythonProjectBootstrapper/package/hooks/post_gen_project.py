@@ -18,11 +18,10 @@ from rich.panel import Panel
 
 
 # ----------------------------------------------------------------------
-_prompts: dict[str, str] = {
+_prefix_prompts: dict[str, str] = {
     "GitHub Personal Access Token for gists": textwrap.dedent(
         """\
-        In this step, we will create a GitHub Personal Access Token (PAT) that is used to
-        update the gist that stores dynamic build data.
+        In this step, we will create a GitHub Personal Access Token (PAT) that is used to update the gist that stores dynamic build data.
 
         1. Visit {{ cookiecutter.github_url }}/settings/tokens?type=beta
         2. Click the "Generate new token" button
@@ -54,16 +53,13 @@ _prompts: dict[str, str] = {
     ),
     "Temporary PyPi Token to Publish Packages": textwrap.dedent(
         """\
-        In this step, we will create a PyPi token that is used to publish python packages. Note
-        that this token will be scoped to all of your projects on PyPi. Once the package is
-        published for the first time, we will delete this token and create one that is scoped to
-        a single project.
+        In this step, we will create a PyPi token that is used to publish python packages. Note that this token will be scoped to all of your projects on PyPi. Once the package is published for the first time, we will delete this token and create one that is scoped to a single project.
 
         1. Visit https://pypi.org/manage/account/
         2. Click the "Add API token" button
         3. Enter the values:
-                Token name:    "Temporary GitHub Publish Action ({{ cookiecutter.github_project_name }})"
-                Scope:         "Entire account (all projects)"
+                Token name:    Temporary GitHub Publish Action ({{ cookiecutter.github_project_name }})
+                Scope:         Entire account (all projects)
         4. Click the "Create token" button
         5. Click the "Copy token" button for use in the next step
         """,
@@ -81,38 +77,50 @@ _prompts: dict[str, str] = {
         5. Click the "Add secret" button
         """,
     ),
+}
+
+if {{cookiecutter.create_docker_image}}:
+    _prefix_prompts["Update GitHub Seettings"] = textwrap.dedent(
+        """\
+        In this step, we will update GitHub settings to allow pushing the generated docker image to the GitHub Container Registry during the build.
+
+        1. Visit {{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/settings/actions
+        2. In the "Workflow permissions" section...
+        3. Select "Read and write permissions"
+        4. Click the "Save" button
+        """,
+    )
+
+_prompts: dict[str, str] = {
     "Commit and Push the Repository": textwrap.dedent(
         """\
-        In this step, we commit the files generated in git, push the changes in GitHub, and verify
-        that the GitHub Actions workflow ran successfully.
-
-        Commit and Push the Changes
-        ---------------------------
-        Note that these steps assume that the GitHub repository has already been created.
+        In this step, we commit the files generated in git and push the changes to GitHub. Note that these steps assume that the GitHub repository has already been created.
 
         From a terminal:
 
         1. Run 'git add -all'
         {windows_command}{commit_step_num}. Run 'git commit -m "🎉 Initial commit"'
         {push_step_num}. Run 'git push'
-
-        Verify the GitHub Actions Workflow
-        ----------------------------------
-        1. Visit {{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/actions
-        2. Click on the most recent workflow
-        3. Wait for the workflow to complete
         """,
     ).format(
         windows_command=(
-            "2. git update-index --chmod=+x Bootstrap.sh\n" if os.name == "nt" else ""
+            "2. Run 'git update-index --chmod=+x Bootstrap.sh'\n" if os.name == "nt" else ""
         ),
         commit_step_num="3" if os.name == "nt" else "2",
         push_step_num="4" if os.name == "nt" else "3",
     ),
+    "Verify GitHub Actions": textwrap.dedent(
+        """\
+        In this step, we will verify that the GitHub Action workflows ran successfully.
+
+        1. Visit {{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/actions
+        2. Click on the most recent workflow
+        3. Wait for the workflow to complete
+        """,
+    ),
     "Remove Temporary PyPi Token": textwrap.dedent(
         """\
-        In this step, we will delete the temporary PyPi token previously created. A new token to replace
-        it will be created in the steps that follow.
+        In this step, we will delete the temporary PyPi token previously created. A new token to replace it will be created in the steps that follow.
 
         1. Visit https://pypi.org/manage/account/
         2. Find the token named "Temporary GitHub Publish Action ({{ cookiecutter.github_project_name }})"...
@@ -130,8 +138,8 @@ _prompts: dict[str, str] = {
         1. Visit https://pypi.org/manage/account/
         2. Click the "Add API token" button
         3. Enter the values:
-                Token name:    "GitHub Publish Action ({{ cookiecutter.github_project_name }})"
-                Scope:         "Project: {{ cookiecutter.pypi_project_name }}"
+                Token name:    GitHub Publish Action ({{ cookiecutter.github_project_name }})
+                Scope:         Project: {{ cookiecutter.pypi_project_name }}
         4. Click the "Create token" button
         5. Click the "Copy token" button for use in the next step
         """,
@@ -179,16 +187,20 @@ def UpdateLicenseFile():
 # ----------------------------------------------------------------------
 def DisplayPrompts():
     border_colors = itertools.cycle(
-        ["green", "yellow", "blue", "magenta", "cyan"],
+        ["yellow", "blue", "magenta", "cyan", "green"],
     )
 
-    for prompt_index, (title, prompt) in enumerate(_prompts.items()):
+    sys.stdout.write("\n\n")
+
+    prompts = list(itertools.chain(_prefix_prompts.items(), _prompts.items()))
+
+    for prompt_index, (title, prompt) in enumerate(prompts):
         print(
             Panel(
-                prompt.strip(),
+                prompt.rstrip(),
                 border_style=next(border_colors),
                 padding=1,
-                title=f"[{prompt_index + 1}/{len(_prompts)}] {title}",
+                title=f"[{prompt_index + 1}/{len(prompts)}] {title}",
                 title_align="left",
             ),
         )

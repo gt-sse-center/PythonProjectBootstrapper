@@ -84,6 +84,7 @@ gist_id: |-
             https://gist.github.com/<github username>/4c10281ff1abc26cafcb9a5f9a8a443e
                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                                                              This is the gist id
+
 gist_username: |-
   Please enter the username associated with your gist_id. In most cases, this will be the same as your GitHub username.
 
