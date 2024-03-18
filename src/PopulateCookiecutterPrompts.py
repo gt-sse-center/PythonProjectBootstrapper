@@ -63,9 +63,7 @@ for directory in directories:
                     ",\n".join(
                         '"{}": "{}"'.format(
                             key,
-                            "\n\n{}{}".format(value, "\n\n" if "\n" in value else "")
-                            .replace("\n", "\\n")
-                            .replace('"', '\\"'),
+                            "\n\n{}\n\n".format(value).replace("\n", "\\n").replace('"', '\\"'),
                         )
                         for key, value in yaml_content.items()
                     ),
