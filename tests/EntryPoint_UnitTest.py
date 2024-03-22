@@ -20,7 +20,7 @@ from PythonProjectBootstrapper.EntryPoint import app
 def test_Version():
     result = CliRunner().invoke(app, ["package", "<output_dir>", "--version"])
     assert result.exit_code == 0
-    assert result.stdout == __version__
+    assert result.stdout == f"PythonProjectBootstrapper {__version__}"
 
 
 # ----------------------------------------------------------------------
