@@ -1,5 +1,3 @@
-# PythonProjectBootstrapper
-
 [![CI](https://github.com/gt-sse-center/PythonProjectBootstrapper/actions/workflows/standard.yaml/badge.svg?event=push)](https://github.com/gt-sse-center/PythonProjectBootstrapper/actions/workflows/standard.yaml)
 [![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/davidbrownell/2f9d770d13e3a148424f374f74d41f4b/raw/PythonProjectBootstrapper_coverage.json)](https://github.com/gt-sse-center/PythonProjectBootstrapper/actions)
 [![License](https://img.shields.io/github/license/gt-sse-center/PythonProjectBootstrapper?color=dark-green)](https://github.com/gt-sse-center/PythonProjectBootstrapper/blob/master/LICENSE.txt)
@@ -9,9 +7,7 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/PythonProjectBootstrapper)](https://pypistats.org/packages/pythonprojectbootstrapper)
 
 
-# PythonProjectBootstrapper
-
-Tools that help in the creation of python projects.
+Tool that helps in the creation of python projects.
 
 ### Quick Start
 
@@ -24,7 +20,7 @@ Tools that help in the creation of python projects.
 
 #### Functionality Provided in Generated Projects
 
-- Simple local development through `Build.py` (see [Local Development](#local-development))
+- Simple local development through `Build.py` (see [Local Development](#local-development) for more information)
 - Python bootstrapping via [PythonBootstrapper](https://github.com/davidbrownell/PythonBootstrapper)
 - Source code formatting via [black](https://github.com/psf/black)
 - Static source analysis via [pylint](https://github.com/pylint-dev/pylint)
@@ -39,7 +35,7 @@ Tools that help in the creation of python projects.
 
 #### Project Content Customization
 
-Please see [DEVELOPMENT.md](https://github.com/gt-sse-center/PythonProjectBootstrapper/DEVELOPMENT.md) for information on the generated content and how to make common modifications to that content.
+Please see [DEVELOPMENT.md](https://github.com/gt-sse-center/PythonProjectBootstrapper/blob/main/DEVELOPMENT.md) for information on the generated content and how to make common modifications to that content.
 
 ### How to use PythonProjectBootstrapper
 
@@ -58,19 +54,19 @@ From a terminal window, run one of the commands below. You will be asked a serie
         <td><code>PythonProjectBootstrapper package &lt;output_dir&gt;</code></td>
         <td>
 <pre style="background-color: black; color: #AAAAAA; font-size: .75em">
-  ┌──────────────────────────────────────────────────────────────────────────────── Python Package ─────────────────────────────────────────────────────────────────────────────────┐
-  │                                                                                                                                                                                 │
-  │ This project creates a Python package hosted on GitHub that uploads a Python wheel to PyPi. It also includes opt-in functionality to create docker images that ensure the exact │
-  │ reproducibility of all commits (which is especially useful for scientific software).                                                                                            │
-  │                                                                                                                                                                                 │
-  │ If you continue, you will be asked a series of questions about your project and given step-by-step instructions on how to set up your project so that it works with 3rd party   │
-  │ solutions (GitHub, PyPi, etc.).                                                                                                                                                 │
-  │                                                                                                                                                                                 │
-  │ The entire process should take about 20 minutes to complete.                                                                                                                    │
-  │                                                                                                                                                                                 │
-  └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────── Python Package ─────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                                                                                                                 │
+│ This project creates a Python package hosted on GitHub that uploads a Python wheel to PyPi. It also includes opt-in functionality to create docker images that ensure the exact │
+│ reproducibility of all commits (which is especially useful for scientific software).                                                                                            │
+│                                                                                                                                                                                 │
+│ If you continue, you will be asked a series of questions about your project and given step-by-step instructions on how to set up your project so that it works with 3rd party   │
+│ solutions (GitHub, PyPi, etc.).                                                                                                                                                 │
+│                                                                                                                                                                                 │
+│ The entire process should take about 20 minutes to complete.                                                                                                                    │
+│                                                                                                                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 &nbsp;
-  Enter 'yes' to continue or 'no' to exit:
+Enter 'yes' to continue or 'no' to exit:
 </pre>
        </td>
     </tr>
@@ -154,7 +150,7 @@ Follow these steps to prepare the repository for local development activities.
 
 ## Similar Tools
 
-There are other tools available that offer similar functionality, each that emphasizes different domains, conventions, or workflows. They are listed here in the event that one of them is a better fit for the specifics of your scenario.
+There are other tools available that offer similar functionality, each emphasizing different domains, conventions, or workflows. They are listed here in the event that one of them is a better fit for the specifics of your scenario.
 
 | Tool | Description |
 | --- | --- |
