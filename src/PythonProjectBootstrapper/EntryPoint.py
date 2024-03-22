@@ -48,7 +48,16 @@ app = typer.Typer(
 
 # ----------------------------------------------------------------------
 class ProjectType(str, Enum):
+    """Defines the different types of projects that can be specified on the command line."""
+
     package = "package"
+
+
+# ----------------------------------------------------------------------
+def _VersionCallback(value: bool) -> None:
+    if value:
+        sys.stdout.write(f"PythonProjectBootstrapper {__version__}")
+        raise typer.Exit()
 
 
 # ----------------------------------------------------------------------
@@ -68,7 +77,12 @@ _replay_option = typer.Option(
     "--replay", help="Do not prompt for input, instead read from saved json."
 )
 _yes_option = typer.Option("--yes", help="Answer yes to all prompts.")
-_version_option = typer.Option("--version", help="Display the current version and exit.")
+_version_option = typer.Option(
+    "--version",
+    help="Display the current version and exit.",
+    callback=_VersionCallback,
+    is_eager=True,
+)
 
 
 # ----------------------------------------------------------------------
@@ -95,7 +109,7 @@ if getattr(sys, "frozen", False):
         configuration_filename: Annotated[Optional[Path], _configuration_filename_option] = None,
         replay: Annotated[bool, _replay_option] = False,
         yes: Annotated[bool, _yes_option] = False,
-        version: Annotated[bool, _version_option] = False,
+        version: Annotated[bool, _version_option] = False,  # pylint: disable=unused-argument
     ) -> None:
         if output_dir.is_file():
             with output_dir.open() as f:
@@ -110,7 +124,6 @@ if getattr(sys, "frozen", False):
             configuration_filename,
             replay=replay,
             yes=yes,
-            version=version,
         )
 
     # ----------------------------------------------------------------------
@@ -128,7 +141,7 @@ else:
         configuration_filename: Annotated[Optional[Path], _configuration_filename_option] = None,
         replay: Annotated[bool, _replay_option] = False,
         yes: Annotated[bool, _yes_option] = False,
-        version: Annotated[bool, _version_option] = False,
+        version: Annotated[bool, _version_option] = False,  # pylint: disable=unused-argument
     ) -> None:
         _ExecuteOutputDir(
             project,
@@ -136,7 +149,6 @@ else:
             configuration_filename,
             replay=replay,
             yes=yes,
-            version=version,
         )
 
 
@@ -153,12 +165,7 @@ def _ExecuteOutputDir(
     *,
     replay: bool,
     yes: bool,
-    version: bool,
 ) -> None:
-    if version:
-        sys.stdout.write(__version__)
-        return
-
     project_dir = PathEx.EnsureDir(_project_root_dir / project.value)
 
     # Does the project have a startup script? If so, invoke it dynamically.
