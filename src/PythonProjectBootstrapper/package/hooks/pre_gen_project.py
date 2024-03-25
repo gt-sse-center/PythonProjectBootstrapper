@@ -7,16 +7,18 @@
 errors: list[str] = []
 
 # fmt: off
-if "{{ cookiecutter.name }}".startswith("<") and "{{ cookiecutter.name }}".endswith(">"):
-    errors.append('name ("{{ cookiecutter.name }}")')
-if "{{ cookiecutter.email }}".startswith("<") and "{{ cookiecutter.email }}".endswith(">"):
-    errors.append('email ("{{ cookiecutter.email }}")')
-if "{{ cookiecutter.project_description }}".startswith("<") and "{{ cookiecutter.project_description }}".endswith(">"):
-    errors.append('project_description ("{{ cookiecutter.project_description }}")')
-if "{{ cookiecutter.gist_id }}".startswith("<") and "{{ cookiecutter.gist_id }}".endswith(">"):
-    errors.append('gist_id ("{{ cookiecutter.gist_id }}")')
-if "{{ cookiecutter.github_username }}".startswith("<") and "{{ cookiecutter.github_username }}".endswith(">"):
-    errors.append('github_username ("{{ cookiecutter.github_username }}")')
+if "{{ cookiecutter.name | escape_double_quotes }}".startswith("<") and "{{ cookiecutter.name | escape_double_quotes }}".endswith(">"):
+    errors.append('''name ("{{ cookiecutter.name }}")''')
+if "{{ cookiecutter.email | escape_double_quotes }}".startswith("<") and "{{ cookiecutter.email | escape_double_quotes }}".endswith(">"):
+    errors.append('''email ("{{ cookiecutter.email }}")''')
+if "{{ cookiecutter.project_description | escape_double_quotes }}".startswith("<") and "{{ cookiecutter.project_description | escape_double_quotes }}".endswith(">"):
+    errors.append('''project_description ("{{ cookiecutter.project_description }}")''')
+if "{{ cookiecutter.github_username | escape_double_quotes }}".startswith("<") and "{{ cookiecutter.github_username | escape_double_quotes }}".endswith(">"):
+    errors.append('''github_username ("{{ cookiecutter.github_username }}")''')
+if "{{ cookiecutter.github_project_name | escape_double_quotes }}".startswith("<") and "{{ cookiecutter.github_project_name | escape_double_quotes }}".endswith(">"):
+    errors.append('''github_project_name ("{{ cookiecutter.github_project_name }}")''')
+if "{{ cookiecutter.gist_id | escape_double_quotes }}".startswith("<") and "{{ cookiecutter.gist_id | escape_double_quotes }}".endswith(">"):
+    errors.append('''gist_id ("{{ cookiecutter.gist_id }}")''')
 # fmt: on
 
 if errors:

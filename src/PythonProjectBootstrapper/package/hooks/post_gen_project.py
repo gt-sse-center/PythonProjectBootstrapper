@@ -18,7 +18,7 @@ from rich.panel import Panel
 
 
 # ----------------------------------------------------------------------
-_prefix_prompts: dict[str, str] = {
+_prompts: dict[str, str] = {
     "GitHub Personal Access Token for gists": textwrap.dedent(
         """\
         In this step, we will create a GitHub Personal Access Token (PAT) that is used to update the gist that stores dynamic build data.
@@ -77,28 +77,23 @@ _prefix_prompts: dict[str, str] = {
         5. Click the "Add secret" button
         """,
     ),
-}
-
-if {{cookiecutter.create_docker_image}}:
-    _prefix_prompts["Update GitHub Seettings"] = textwrap.dedent(
+    "Update GitHub Settings": textwrap.dedent(
         """\
-        In this step, we will update GitHub settings to allow pushing the generated docker image to the GitHub Container Registry during the build.
+        In this step, we will update GitHub settings to allow the creation of git tags during a release.
 
         1. Visit {{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/settings/actions
         2. In the "Workflow permissions" section...
         3. Select "Read and write permissions"
         4. Click the "Save" button
         """,
-    )
-
-_prompts: dict[str, str] = {
+    ),
     "Commit and Push the Repository": textwrap.dedent(
         """\
         In this step, we commit the files generated in git and push the changes to GitHub. Note that these steps assume that the GitHub repository has already been created.
 
         From a terminal:
 
-        1. Run 'git add -all'
+        1. Run 'git add --all'
         {windows_command}{commit_step_num}. Run 'git commit -m "🎉 Initial commit"'
         {push_step_num}. Run 'git push'
         """,
@@ -192,15 +187,13 @@ def DisplayPrompts():
 
     sys.stdout.write("\n\n")
 
-    prompts = list(itertools.chain(_prefix_prompts.items(), _prompts.items()))
-
-    for prompt_index, (title, prompt) in enumerate(prompts):
+    for prompt_index, (title, prompt) in enumerate(_prompts.items()):
         print(
             Panel(
                 prompt.rstrip(),
                 border_style=next(border_colors),
                 padding=1,
-                title=f"[{prompt_index + 1}/{len(prompts)}] {title}",
+                title=f"[{prompt_index + 1}/{len(_prompts)}] {title}",
                 title_align="left",
             ),
         )

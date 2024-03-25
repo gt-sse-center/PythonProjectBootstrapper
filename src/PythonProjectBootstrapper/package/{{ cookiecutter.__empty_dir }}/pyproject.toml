@@ -11,13 +11,13 @@ build-backend = "setuptools.build_meta"
 # |
 # ----------------------------------------------------------------------
 [project]
-name = "{{ cookiecutter.pypi_project_name }}"
-description = "{{ cookiecutter.project_description }}"
+name = "{{ cookiecutter.pypi_project_name | escape_double_quotes }}"
+description = "{{ cookiecutter.project_description | escape_double_quotes }}"
 
-license = { text = "{{ cookiecutter.license }}" }
+license = { text = "{{ cookiecutter.license | escape_double_quotes }}" }
 
 authors = [
-    { name = "{{ cookiecutter.name }}", email = "{{ cookiecutter.email }}" },
+    { name = "{{ cookiecutter.name | escape_double_quotes }}", email = "{{ cookiecutter.email | escape_double_quotes }}" },
 ]
 
 keywords = [
@@ -27,7 +27,7 @@ keywords = [
 # https://pypi.org/classifiers/
 classifiers = [
     # TODO
-    "License :: OSI Approved :: {{ cookiecutter.license }} License",
+    "License :: OSI Approved :: {{ cookiecutter.license | escape_double_quotes }} License",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
@@ -60,12 +60,12 @@ package = [
 ]
 
 [project.urls]
-Homepage = "{{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}"
-Documentation = "{{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}"
-Repository = "{{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}"
+Homepage = "{{ cookiecutter.github_url | escape_double_quotes }}/{{ cookiecutter.github_username | escape_double_quotes }}/{{ cookiecutter.github_project_name | escape_double_quotes }}"
+Documentation = "{{ cookiecutter.github_url | escape_double_quotes }}/{{ cookiecutter.github_username | escape_double_quotes }}/{{ cookiecutter.github_project_name | escape_double_quotes }}"
+Repository = "{{ cookiecutter.github_url | escape_double_quotes }}/{{ cookiecutter.github_username | escape_double_quotes }}/{{ cookiecutter.github_project_name | escape_double_quotes }}"
 
 [project.scripts]
-{{ cookiecutter.pypi_project_name }} = "{{ cookiecutter.pypi_project_name }}:EntryPoint.app"
+{{ cookiecutter.pypi_project_name }} = "{{ cookiecutter.pypi_project_name | escape_double_quotes }}:EntryPoint.app"
 
 
 # ----------------------------------------------------------------------
@@ -164,4 +164,4 @@ python_files = [
 # |
 # ----------------------------------------------------------------------
 [tool.setuptools.dynamic]
-version = { attr = "{{ cookiecutter.pypi_project_name }}.__version__" }
+version = { attr = "{{ cookiecutter.pypi_project_name | escape_double_quotes }}.__version__" }

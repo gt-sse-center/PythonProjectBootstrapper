@@ -40,5 +40,8 @@
         "create_docker_image": "\n\nWould you like the GitHub Action workflows to create docker images of the development environment?\nThese images can be used to produce exact results across different commits made to the repository\nover time (which is especially valuable when writing scientific software).\n\n"
     },
 
-    "_extensions": ["local_extensions.pypi_string"]
+    "_extensions": [
+        "local_extensions.pypi_string",
+        "local_extensions.escape_double_quotes"
+    ]
 }
