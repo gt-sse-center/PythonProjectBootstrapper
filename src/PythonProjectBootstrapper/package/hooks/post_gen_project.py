@@ -94,15 +94,10 @@ _prompts: dict[str, str] = {
         From a terminal:
 
         1. Run 'git add --all'
-        {windows_command}{commit_step_num}. Run 'git commit -m "🎉 Initial commit"'
-        {push_step_num}. Run 'git push'
+        2. Run 'git update-index --chmod=+x Bootstrap.sh'
+        3. Run 'git commit -m "🎉 Initial commit"'
+        4. Run 'git push'
         """,
-    ).format(
-        windows_command=(
-            "2. Run 'git update-index --chmod=+x Bootstrap.sh'\n" if os.name == "nt" else ""
-        ),
-        commit_step_num="3" if os.name == "nt" else "2",
-        push_step_num="4" if os.name == "nt" else "3",
     ),
     "Verify GitHub Actions": textwrap.dedent(
         """\
