@@ -12,3 +12,4 @@ Deactivate*.sh
 build/**
 dist/**
 src/PythonProjectBootstrapper.egg-info/**
+.DS_Store
