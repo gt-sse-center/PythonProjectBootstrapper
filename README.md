@@ -158,6 +158,7 @@ There are other tools available that offer similar functionality, each emphasizi
 | [cookiecutter-cms](https://github.com/MolSSI/cookiecutter-cms) | A cookiecutter template for those interested in developing computational molecular packages in Python. |
 | [LINCC Frameworks Python Project Template](https://github.com/lincc-frameworks/python-project-template) | This project template codifies LINCC-Framework's best practices for python code organization, testing, documentation, and automation. |
 | [Cookiecutter Django](https://github.com/cookiecutter/cookiecutter-django) | Cookiecutter Django is a framework for jumpstarting production-ready Django projects quickly. |
+| [cookiecutter-pylibrary](https://github.com/ionelmc/cookiecutter-pylibrary) | Enhanced cookiecutter template for Python libraries. |
 
 ### Templating Systems
 
