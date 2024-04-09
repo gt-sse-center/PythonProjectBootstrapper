@@ -161,6 +161,15 @@ _prompts: dict[str, str] = {
 
 
 # ----------------------------------------------------------------------
+def UpdateBootstrapExecutionPermissions():
+    bootstrap_path = Path("./Bootstrap.sh")
+
+    PathEx.EnsureFile(bootstrap_path)
+    status = bootstrap_path.stat()
+    bootstrap_path.chmod(status.st_mode | 0o700)
+
+
+# ----------------------------------------------------------------------
 def UpdateLicenseFile():
     this_dir = Path.cwd()
     licenses_dir = PathEx.EnsureDir(this_dir / "Licenses")
@@ -232,5 +241,6 @@ def FinalPrompt():
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 UpdateLicenseFile()
+UpdateBootstrapExecutionPermissions()
 DisplayPrompts()
 FinalPrompt()
