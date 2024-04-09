@@ -168,6 +168,7 @@ def UpdateBootstrapExecutionPermissions():
     status = bootstrap_path.stat()
     bootstrap_path.chmod(status.st_mode | 0o700)
 
+
 # ----------------------------------------------------------------------
 def UpdateLicenseFile():
     this_dir = Path.cwd()
