@@ -209,9 +209,7 @@ def _ExecuteOutputDir(
 
 
 # ----------------------------------------------------------------------
-def _CreateManifest(
-    generated_dir: Path, manifest_file_path: Optional[Path], write_to_file: bool
-) -> dict[str, str]:
+def _CreateManifest(generated_dir: Path, manifest_file_path: Optional[Path]) -> dict[str, str]:
 
     manifest_dict: dict[str, str] = {}
     generated_files: list[Path] = []
@@ -232,32 +230,71 @@ def _CreateManifest(
 
         with open(genfile, "rb") as f:
             digest = hashlib.file_digest(f, hashlib.sha256)
-            manifest_dict[genfile] = digest.hexdigest()
-
-    # Store manifest dictionary in file if needed
-    if write_to_file:
-        manifest_file = open(manifest_file_path, "w")
-        json.dump(manifest_dict, manifest_file)
-        manifest_file.close()
+            rel_path = PathEx.CreateRelativePath(generated_dir, genfile)
+            manifest_dict[rel_path] = digest.hexdigest()
 
     return manifest_dict
 
 
 # ----------------------------------------------------------------------
-def _CopyToOutputDir(tmp_dir: Path, output_dir: Path) -> None:
-    generated_manifest = _CreateManifest(tmp_dir, manifest_file_path=None, write_to_file=False)
+def _RemoveUnchangedTemplateFiles(
+    new_manifest_dict: dict[str, str], existing_manifest_dict: dict[str, str], output_dir: Path
+) -> None:
+    # files no longer in template
+    removed_template_files = set(existing_manifest_dict.keys()) - set(new_manifest_dict.keys())
 
-    for filepath, hash in generated_manifest.items():
-        relative_filepath = PathEx.CreateRelativePath(tmp_dir, Path(filepath))
-        output_dir_filepath = output_dir / relative_filepath
+    PathEx.EnsureDir(output_dir)
+
+    # iterate over files no longer generated in template
+    for removed_file_rel_path in removed_template_files:
+        removed_full_path = output_dir / removed_file_rel_path
+
+        if removed_full_path.is_file():
+            PathEx.EnsureFile(removed_full_path)
+            with open(removed_full_path, "rb") as removed_file:
+                current_hash = hashlib.file_digest(removed_file, hashlib.sha256).hexdigest()
+
+            original_hash = existing_manifest_dict[removed_file_rel_path]
+
+            # file unchanged since its original generation
+            if current_hash == original_hash:
+                # remove file
+                removed_full_path.unlink()
+
+
+# ----------------------------------------------------------------------
+def _CopyToOutputDir(tmp_dir: Path, output_dir: Path) -> None:
+
+    generated_manifest = _CreateManifest(tmp_dir, manifest_file_path=None)
+    existing_manifest = {}
+
+    # TODO: check this path. This may not be the proper way to do things if the CWD changes based on where the code is run from
+    potential_manifest = Path("./manifest.yml")
+
+    # if this is not our first time generating, remove unwanted template files
+    if potential_manifest.is_file():
+        with open(potential_manifest, "r") as existing_manifest_file:
+            existing_manifest = yaml.load(existing_manifest_file, Loader=yaml.Loader)
+
+        _RemoveUnchangedTemplateFiles(
+            new_manifest_dict=generated_manifest,
+            existing_manifest_dict=existing_manifest,
+            output_dir=output_dir,
+        )
+
+    for filepath, generated_hash in generated_manifest.items():
+        output_dir_filepath = output_dir / filepath
 
         # Check if we are overwriting any modified files
         if output_dir_filepath.is_file():
             with open(output_dir_filepath, "rb") as existing_file:
                 existing_file_hash = hashlib.file_digest(existing_file, hashlib.sha256).hexdigest()
 
-            # Changes detected
-            if hash != existing_file_hash:
+            # Changes detected in file and file modified by user (changes do not stem only from changes in the contents of the template file)
+            if (
+                generated_hash != existing_file_hash
+                and existing_file_hash != existing_manifest[filepath]
+            ):
                 changed_file_name = str(output_dir_filepath)
 
                 while True:
@@ -270,8 +307,15 @@ def _CopyToOutputDir(tmp_dir: Path, output_dir: Path) -> None:
                         break
 
                     if overwrite in ["no", "n"]:
-                        shutil.copy2(output_dir_filepath, filepath)
+                        shutil.copy2(output_dir_filepath, tmp_dir / filepath)
                         break
+        else:
+            existing_manifest[filepath] = generated_hash
+
+    # create final manifest after all overwrites and write to file
+    manifest_file = open(potential_manifest, "w")
+    yaml.dump(existing_manifest, manifest_file)
+    manifest_file.close()
 
     # copy temporary directory to final output directory and remove temporary directory
     shutil.copytree(tmp_dir, output_dir, dirs_exist_ok=True, copy_function=shutil.copy2)
@@ -281,9 +325,9 @@ def _CopyToOutputDir(tmp_dir: Path, output_dir: Path) -> None:
 # ----------------------------------------------------------------------
 def _DisplayPrompts(output_dir: Path) -> None:
     # Ensure yaml file exists and load contents
-    prompt_values_file = (
-        Path.cwd() / "src" / "PythonProjectBootstrapper" / "PromptPopulateValues.yml"
-    )
+
+    # TODO: this is hacky. There should be a common place for the prompt values to be written to and read from that does not rely on sys.path
+    prompt_values_file = Path(sys.path[-1] + "/PythonProjectBootstrapper/PromptPopulateValues.yml")
     PathEx.EnsureFile(prompt_values_file)
 
     with open(prompt_values_file, "r") as yaml_file:
