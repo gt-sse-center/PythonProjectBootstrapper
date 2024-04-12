@@ -5,7 +5,6 @@
 #
 # ----------------------------------------------------------------------
 import shutil
-import sys
 import yaml
 
 from pathlib import Path
@@ -16,7 +15,7 @@ from rich.panel import Panel
 
 
 # ----------------------------------------------------------------------
-def WriteToYaml():
+def SavePromptValues():
     prompt_val_dict: dict[str, str] = {
         "github_url": "{{ cookiecutter.github_url }}",
         "github_project_name": "{{ cookiecutter.github_project_name }}",
@@ -25,21 +24,11 @@ def WriteToYaml():
         "license": "{{ cookiecutter.license }}",
     }
 
-    # TODO: find a cleaner way to do this :/
-    yaml_path = sys.path[-1] + "/PythonProjectBootstrapper/PromptPopulateValues.yml"
+    yaml_path = Path.cwd() / "PromptPopulateValues.yml"
 
     prompt_yaml_file = open(yaml_path, "w")
     yaml.dump(prompt_val_dict, prompt_yaml_file)
     prompt_yaml_file.close()
-
-
-# ----------------------------------------------------------------------
-def UpdateBootstrapExecutionPermissions():
-    bootstrap_path = Path("./Bootstrap.sh")
-
-    PathEx.EnsureFile(bootstrap_path)
-    status = bootstrap_path.stat()
-    bootstrap_path.chmod(status.st_mode | 0o700)
 
 
 # ----------------------------------------------------------------------
@@ -75,5 +64,5 @@ def UpdateLicenseFile():
 # ----------------------------------------------------------------------
 
 UpdateLicenseFile()
-WriteToYaml()
+SavePromptValues()
 UpdateBootstrapExecutionPermissions()
