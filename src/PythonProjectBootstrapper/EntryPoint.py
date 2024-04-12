@@ -286,6 +286,9 @@ def _CopyToOutputDir(tmp_dir: Path, output_dir: Path) -> None:
             output_dir=output_dir,
         )
 
+    merged_manifest = dict(generated_manifest)
+    merged_manifest.update(existing_manifest)
+
     # Ask user if they would like to overwrite their changes if any conflicts detected
     for rel_filepath, generated_hash in generated_manifest.items():
         output_dir_filepath: Path = output_dir / rel_filepath
@@ -299,7 +302,8 @@ def _CopyToOutputDir(tmp_dir: Path, output_dir: Path) -> None:
             # Changes detected in file and file modified by user (changes do not stem only from changes in the contents of the template file)
             if (
                 generated_hash != existing_file_hash
-                and existing_file_hash != existing_manifest[rel_filepath]
+                and rel_filepath in existing_manifest.keys()
+                and existing_file_hash != merged_manifest[rel_filepath]
             ):
 
                 while True:
@@ -314,12 +318,10 @@ def _CopyToOutputDir(tmp_dir: Path, output_dir: Path) -> None:
                     if overwrite in ["no", "n"]:
                         shutil.copy2(output_dir_filepath, tmp_dir / rel_filepath)
                         break
-        else:
-            existing_manifest[rel_filepath] = generated_hash
 
     # create and save manifest
     manifest_file = open(potential_manifest, "w")
-    yaml.dump(existing_manifest, manifest_file)
+    yaml.dump(merged_manifest, manifest_file)
     manifest_file.close()
 
     # copy temporary directory to final output directory and remove temporary directory
