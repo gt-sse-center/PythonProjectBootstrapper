@@ -239,7 +239,7 @@ def _CreateManifest(generated_dir: Path) -> dict[Path, str]:
 # Removes any template files no longer being generated as long as the file was never modified by the user
 
 
-def _RemoveUnchangedTemplateFiles(
+def _ConditionallyRemoveUnchangedTemplateFiles(
     new_manifest_dict: dict[Path, str], existing_manifest_dict: dict[Path, str], output_dir: Path
 ) -> None:
     # files no longer in template
@@ -268,6 +268,8 @@ def _RemoveUnchangedTemplateFiles(
 
 
 def _CopyToOutputDir(tmp_dir: Path, output_dir: Path) -> None:
+    PathEx.EnsureDir(tmp_dir)
+    PathEx.EnsureDir(output_dir)
 
     # existing_manifest will be populated/updated as necessary and saved
     generated_manifest: dict[Path, str] = _CreateManifest(tmp_dir)
@@ -280,7 +282,7 @@ def _CopyToOutputDir(tmp_dir: Path, output_dir: Path) -> None:
         with open(potential_manifest, "r") as existing_manifest_file:
             existing_manifest = yaml.load(existing_manifest_file, Loader=yaml.Loader)
 
-        _RemoveUnchangedTemplateFiles(
+        _ConditionallyRemoveUnchangedTemplateFiles(
             new_manifest_dict=generated_manifest,
             existing_manifest_dict=existing_manifest,
             output_dir=output_dir,
@@ -294,16 +296,15 @@ def _CopyToOutputDir(tmp_dir: Path, output_dir: Path) -> None:
         output_dir_filepath: Path = output_dir / rel_filepath
 
         if output_dir_filepath.is_file():
-            with open(output_dir_filepath, "rb") as existing_file:
-                existing_file_hash: str = hashlib.file_digest(
-                    existing_file, hashlib.sha256
+            with open(output_dir_filepath, "rb") as current_file:
+                current_file_hash: str = hashlib.file_digest(
+                    current_file, hashlib.sha256
                 ).hexdigest()
 
             # Changes detected in file and file modified by user (changes do not stem only from changes in the contents of the template file)
             if (
-                generated_hash != existing_file_hash
-                and rel_filepath in existing_manifest.keys()
-                and existing_file_hash != merged_manifest[rel_filepath]
+                generated_hash != current_file_hash
+                and current_file_hash != merged_manifest[rel_filepath]
             ):
 
                 while True:
@@ -333,6 +334,7 @@ def _CopyToOutputDir(tmp_dir: Path, output_dir: Path) -> None:
 
 # ----------------------------------------------------------------------
 def _DisplayPrompts(output_dir: Path) -> None:
+    PathEx.EnsureDir(output_dir)
     prompt_values_file: Path = output_dir / "PromptPopulateValues.yml"
     PathEx.EnsureFile(prompt_values_file)
 
