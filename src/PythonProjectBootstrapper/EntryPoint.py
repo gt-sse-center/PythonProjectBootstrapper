@@ -318,6 +318,8 @@ def _CopyToOutputDir(tmp_dir: Path, output_dir: Path) -> None:
                     if overwrite in ["no", "n"]:
                         shutil.copy2(output_dir_filepath, tmp_dir / rel_filepath)
                         break
+        else:
+            merged_manifest[rel_filepath] = generated_hash
 
     # create and save manifest
     manifest_file = open(potential_manifest, "w")
