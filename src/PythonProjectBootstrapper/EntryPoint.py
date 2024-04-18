@@ -6,21 +6,12 @@
 # ----------------------------------------------------------------------
 """This file serves as an example of how to create scripts that can be invoked from the command line once the package is installed."""
 
-import hashlib
 import importlib
-import itertools
-import json
-import os
 import sys
-import uuid
-import yaml
 
 from enum import Enum
 from pathlib import Path
 from typing import Annotated, Optional
-
-from rich import print  # pylint: disable=redefined-builtin
-from rich.panel import Panel
 
 import typer
 
@@ -30,6 +21,10 @@ from cookiecutter.main import cookiecutter
 from dbrownell_Common.ContextlibEx import ExitStack
 from dbrownell_Common import PathEx
 from PythonProjectBootstrapper import __version__
+from PythonProjectBootstrapper.ProjectGenerationUtils import (
+    _CopyToOutputDir,
+    _DisplayPrompt,
+)
 
 # The following imports are used in cookiecutter hooks. Import them here to
 # ensure that they are frozen when creating binaries,
@@ -175,12 +170,13 @@ def _ExecuteOutputDir(
     replay: bool,
     yes: bool,
 ) -> None:
+    if not (output_dir / ".git").is_dir():
+        raise Exception(f"{output_dir} is not a git repository.")
+
     project_dir = PathEx.EnsureDir(_project_root_dir / project.value)
 
     # create temporary directory for cookiecutter output
-    tmp_dir = Path.cwd() / uuid.uuid4().hex
-    os.makedirs(tmp_dir, exist_ok=True)
-    os.makedirs(tmp_dir / ".git", exist_ok=True)
+    tmp_dir = PathEx.CreateTempDirectory()
 
     # Does the project have a startup script? If so, invoke it dynamically.
     potential_startup_script = project_dir / "hooks" / "startup.py"
@@ -204,331 +200,8 @@ def _ExecuteOutputDir(
         accept_hooks=True,
     )
 
-    _CopyToOutputDir(tmp_dir=tmp_dir, output_dir=output_dir)
-    _DisplayPrompts(output_dir=output_dir)
-
-
-# ----------------------------------------------------------------------
-def _CreateManifest(generated_dir: Path) -> dict[Path, str]:
-
-    manifest_dict: dict[Path, str] = {}
-    generated_files: list[Path] = []
-    directories: list[Path] = [generated_dir]
-
-    while directories != []:
-        dir: Path = directories.pop(0)
-        PathEx.EnsureDir(dir)
-
-        for root, dirs, files in os.walk(dir):
-            create_full_path_fn = lambda rel_path: Path(os.path.join(root, rel_path))
-            generated_files += [create_full_path_fn(file) for file in files]
-            directories += [create_full_path_fn(directory) for directory in dirs]
-
-    # Populate manifest dictionary
-    for genfile in generated_files:
-        PathEx.EnsureFile(genfile)
-
-        with open(genfile, "rb") as f:
-            rel_path = PathEx.CreateRelativePath(generated_dir, genfile)
-            manifest_dict[rel_path] = hashlib.file_digest(f, hashlib.sha256).hexdigest()
-
-    return manifest_dict
-
-
-# ----------------------------------------------------------------------
-# Removes any template files no longer being generated as long as the file was never modified by the user
-
-
-def _ConditionallyRemoveUnchangedTemplateFiles(
-    new_manifest_dict: dict[Path, str], existing_manifest_dict: dict[Path, str], output_dir: Path
-) -> None:
-    # files no longer in template
-    removed_template_files: set[Path] = set(existing_manifest_dict.keys()) - set(
-        new_manifest_dict.keys()
-    )
-
-    PathEx.EnsureDir(output_dir)
-
-    # remove files no longer in template if they are unchanged
-    for removed_file_rel_path in removed_template_files:
-        removed_full_path = output_dir / removed_file_rel_path
-
-        if removed_full_path.is_file():
-            with open(removed_full_path, "rb") as removed_file:
-                current_hash = hashlib.file_digest(removed_file, hashlib.sha256).hexdigest()
-
-            original_hash = existing_manifest_dict[removed_file_rel_path]
-
-            if current_hash == original_hash:
-                removed_full_path.unlink()
-
-
-# ----------------------------------------------------------------------
-# Copies all generated files into the output directory and handles the creation/updating of the manifest file
-
-
-def _CopyToOutputDir(tmp_dir: Path, output_dir: Path) -> None:
-    PathEx.EnsureDir(tmp_dir)
-    PathEx.EnsureDir(output_dir)
-
-    # existing_manifest will be populated/updated as necessary and saved
-    generated_manifest: dict[Path, str] = _CreateManifest(tmp_dir)
-    existing_manifest: dict[Path, str] = {}
-
-    potential_manifest: Path = output_dir / ".manifest.yml"
-
-    # if this is not our first time generating, remove unwanted template files
-    if potential_manifest.is_file():
-        with open(potential_manifest, "r") as existing_manifest_file:
-            existing_manifest = yaml.load(existing_manifest_file, Loader=yaml.Loader)
-
-        _ConditionallyRemoveUnchangedTemplateFiles(
-            new_manifest_dict=generated_manifest,
-            existing_manifest_dict=existing_manifest,
-            output_dir=output_dir,
-        )
-
-    merged_manifest = dict(generated_manifest)
-    merged_manifest.update(existing_manifest)
-
-    # Ask user if they would like to overwrite their changes if any conflicts detected
-    for rel_filepath, generated_hash in generated_manifest.items():
-        output_dir_filepath: Path = output_dir / rel_filepath
-
-        if output_dir_filepath.is_file():
-            with open(output_dir_filepath, "rb") as current_file:
-                current_file_hash: str = hashlib.file_digest(
-                    current_file, hashlib.sha256
-                ).hexdigest()
-
-            # Changes detected in file and file modified by user (changes do not stem only from changes in the contents of the template file)
-            if (
-                generated_hash != current_file_hash
-                and current_file_hash != merged_manifest[rel_filepath]
-            ):
-
-                while True:
-                    sys.stdout.write(
-                        f"\nWould you like to overwrite your changes in {str(output_dir_filepath)}? [yes/no]: "
-                    )
-                    overwrite = input().strip().lower()
-
-                    if overwrite in ["yes", "y"]:
-                        break
-
-                    if overwrite in ["no", "n"]:
-                        shutil.copy2(output_dir_filepath, tmp_dir / rel_filepath)
-                        break
-        else:
-            merged_manifest[rel_filepath] = generated_hash
-
-    # create and save manifest
-    manifest_file = open(potential_manifest, "w")
-    yaml.dump(merged_manifest, manifest_file)
-    manifest_file.close()
-
-    # copy temporary directory to final output directory and remove temporary directory
-    shutil.copytree(tmp_dir, output_dir, dirs_exist_ok=True, copy_function=shutil.copy2)
-    shutil.rmtree(tmp_dir)
-
-
-# ----------------------------------------------------------------------
-def _DisplayPrompts(output_dir: Path) -> None:
-    PathEx.EnsureDir(output_dir)
-    prompt_values_file: Path = output_dir / "PromptPopulateValues.yml"
-    PathEx.EnsureFile(prompt_values_file)
-
-    with open(prompt_values_file, "r") as yaml_file:
-        _prompt_values = yaml.load(yaml_file, Loader=yaml.Loader)
-
-    prompt_values_file.unlink()
-
-    # Instructions for post generation
-    _prompts: dict[str, str] = {
-        "GitHub Personal Access Token for gists": textwrap.dedent(
-            f"""\
-            In this step, we will create a GitHub Personal Access Token (PAT) that is used to update the gist that stores dynamic build data.
-
-            1. Visit {_prompt_values['github_url']}/settings/tokens?type=beta
-            2. Click the "Generate new token" button
-            3. Name the token "GitHub Workflow Gist ({_prompt_values['github_project_name']})"
-            4. In the Repository access section...
-            5. Select "Only select repositories"...
-            6. Select "{_prompt_values['github_project_name']}"
-            7. In the "Permissions" section...
-            8. Press the "Account permissions" dropdown...
-            9. Select the "Gists" section...
-            10. Click the "Access: No access" dropdown button...
-            11. Select "Read and write"
-            12. Click the "Generate token" button
-            13. Copy the token for use in the next step
-            """,
-        ),
-        "Save the GitHub Personal Access Token for gists": textwrap.dedent(
-            f"""\
-            In this step, we will save the GitHub PAT we just created as a GitHub Action Secret.
-
-            1. Visit {_prompt_values['github_url']}/{_prompt_values['github_username']}/{_prompt_values['github_project_name']}/settings/secrets/actions
-            2. In the "Repository secrets" section...
-            3. Click the "New repository secret" button
-            4. Enter the values:
-                    Name:     GIST_TOKEN
-                    Secret:   <paste the token generated in the previous step>
-            5. Click the "Add secret" button
-            """,
-        ),
-        "Temporary PyPi Token to Publish Packages": textwrap.dedent(
-            f"""\
-            In this step, we will create a PyPi token that is used to publish python packages. Note that this token will be scoped to all of your projects on PyPi. Once the package is published for the first time, we will delete this token and create one that is scoped to a single project.
-
-            1. Visit https://pypi.org/manage/account/
-            2. Click the "Add API token" button
-            3. Enter the values:
-                    Token name:    Temporary GitHub Publish Action ({_prompt_values['github_project_name']})
-                    Scope:         Entire account (all projects)
-            4. Click the "Create token" button
-            5. Click the "Copy token" button for use in the next step
-            """,
-        ),
-        "Save the Temporary PyPi Token to Publish Packages": textwrap.dedent(
-            f"""\
-            In this step, we will save the PyPi token that we just created as a GitHub Action Secret.
-
-            1. Visit {_prompt_values['github_url']}/{_prompt_values['github_username']}/{_prompt_values['github_project_name']}/settings/secrets/actions
-            2. In the "Repository secrets" section...
-            3. Click the "New repository secret" button
-            4. Enter the values:
-                    Name:     PYPI_TOKEN
-                    Secret:   <paste the token generated in the previous step>
-            5. Click the "Add secret" button
-            """,
-        ),
-        "Update GitHub Settings": textwrap.dedent(
-            f"""\
-            In this step, we will update GitHub settings to allow the creation of git tags during a release.
-
-            1. Visit {_prompt_values['github_url']}/{_prompt_values['github_username']}/{_prompt_values['github_project_name']}/settings/actions
-            2. In the "Workflow permissions" section...
-            3. Select "Read and write permissions"
-            4. Click the "Save" button
-            """,
-        ),
-        "Commit and Push the Repository": textwrap.dedent(
-            """\
-            In this step, we commit the files generated in git and push the changes to GitHub. Note that these steps assume that the GitHub repository has already been created.
-
-            From a terminal:
-
-            1. Run 'git add --all'
-            {windows_command}{commit_step_num}. Run 'git commit -m "🎉 Initial commit"'
-            {push_step_num}. Run 'git push'
-            """,
-        ).format(
-            windows_command=(
-                "2. Run 'git update-index --chmod=+x Bootstrap.sh'\n" if os.name == "nt" else ""
-            ),
-            commit_step_num="3" if os.name == "nt" else "2",
-            push_step_num="4" if os.name == "nt" else "3",
-        ),
-        "Verify GitHub Actions": textwrap.dedent(
-            f"""\
-            In this step, we will verify that the GitHub Action workflows ran successfully.
-
-            1. Visit {_prompt_values['github_url']}/{_prompt_values['github_username']}/{_prompt_values['github_project_name']}/actions
-            2. Click on the most recent workflow
-            3. Wait for the workflow to complete
-            """,
-        ),
-        "Remove Temporary PyPi Token": textwrap.dedent(
-            f"""\
-            In this step, we will delete the temporary PyPi token previously created. A new token to replace it will be created in the steps that follow.
-
-            1. Visit https://pypi.org/manage/account/
-            2. Find the token named "Temporary GitHub Publish Action ({_prompt_values['github_project_name']})"...
-            3. Click the "Options" dropdown button...
-            4. Select "Remove token"
-            5. In the dialog box that appears...
-            6. Enter your password
-            7. Click the "Remove API token" button
-            """,
-        ),
-        "Scoped PyPi Token to Publish Packages": textwrap.dedent(
-            f"""\
-            In this step, we create a new token that is scoped to "{_prompt_values['pypi_project_name']}".
-
-            1. Visit https://pypi.org/manage/account/
-            2. Click the "Add API token" button
-            3. Enter the values:
-                    Token name:    GitHub Publish Action ({_prompt_values['github_project_name']})
-                    Scope:         Project: {_prompt_values['pypi_project_name']}
-            4. Click the "Create token" button
-            5. Click the "Copy token" button for use in the next step
-            """,
-        ),
-        "Save the Scoped PyPi Token to Publish Packages": textwrap.dedent(
-            f"""\
-            In this step, we will replace the GitHub secret with the PyPi token just created.
-
-            1. Visit {_prompt_values['github_url']}/{_prompt_values['github_username']}/{_prompt_values['github_project_name']}/settings/secrets/actions/PYPI_TOKEN
-            2. In the "Value" text window, paste the token generated in the previous step
-            3. Click "Update secret"
-            """,
-        ),
-        "Update README.md": textwrap.dedent(
-            f"""\
-            In this step, we will update the README.md file with information about your project.
-
-            1. Edit README.md
-            2. Replace the "TODO" comment in the "Overview" section.
-            3. Replace the "TODO" comment in the "How to use {_prompt_values['github_project_name']}" section.
-            """,
-        ),
-    }
-
-    # Display prompts
-    border_colors = itertools.cycle(
-        ["yellow", "blue", "magenta", "cyan", "green"],
-    )
-
-    sys.stdout.write("\n\n")
-
-    for prompt_index, (title, prompt) in enumerate(_prompts.items()):
-        print(
-            Panel(
-                prompt.rstrip(),
-                border_style=next(border_colors),
-                padding=1,
-                title=f"[{prompt_index + 1}/{len(_prompts)}] {title}",
-                title_align="left",
-            ),
-        )
-
-        sys.stdout.write("\nPress <enter> to continue")
-        input()
-        sys.stdout.write("\n\n")
-
-    # Final prompt
-    sys.stdout.write(
-        textwrap.dedent(
-            """\
-            The project has now been bootstrapped!
-
-            To begin development, run these commands:
-
-                1. cd "{output_dir}"
-                2. Bootstrap{ext}
-                3. {source}{prefix}Activate{ext}
-                4. python Build.py pytest
-
-
-            """,
-        ).format(
-            output_dir=output_dir,
-            ext=".cmd" if os.name == "nt" else ".sh",
-            source="source " if os.name != "nt" else "",
-            prefix="./" if os.name != "nt" else "",
-        ),
-    )
+    _CopyToOutputDir(src_dir=tmp_dir, dest_dir=output_dir)
+    _DisplayPrompt(output_dir=output_dir)
 
 
 if __name__ == "__main__":

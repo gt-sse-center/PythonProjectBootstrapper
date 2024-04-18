@@ -67,7 +67,4 @@ def Execute(
             if result in ["no", "n"]:
                 return False
 
-    if not (output_dir / ".git").is_dir():
-        raise Exception(f"{output_dir} is not a git repository.")
-
     return True
