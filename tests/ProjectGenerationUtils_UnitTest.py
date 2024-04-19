@@ -16,7 +16,7 @@ from dbrownell_Common import PathEx
 from PythonProjectBootstrapper.ProjectGenerationUtils import (
     _CreateManifest,
     _ConditionallyRemoveUnchangedTemplateFiles,
-    _CopyToOutputDir,
+    CopyToOutputDir,
     _GenerateFileHash,
     HASH_ALG,
 )
@@ -176,12 +176,12 @@ def test_CopyToOutputDir_overwritePrompt(fs, os_type, overwrite):
 
     fs.create_dir(dest)
 
-    _CopyToOutputDir(src_dir=src, dest_dir=dest)
+    CopyToOutputDir(src_dir=src, dest_dir=dest)
 
     fs.get_object(str(dest / "testFile3")).set_contents(contents="hi")
 
     with patch("builtins.input", lambda *args: overwrite):
-        _CopyToOutputDir(src_dir=src2, dest_dir=dest)
+        CopyToOutputDir(src_dir=src2, dest_dir=dest)
 
     correct_output = files1 if overwrite == "y" else files2
 
@@ -220,7 +220,7 @@ def test_CopyToOutputDir_no_prompt(fs, os_type):
 
     fs.create_dir(dest)
 
-    _CopyToOutputDir(src_dir=src, dest_dir=dest)
+    CopyToOutputDir(src_dir=src, dest_dir=dest)
 
     assert dirs_equal(expected, dest)
     PathEx.EnsureExists(dest / ".manifest.yml")
