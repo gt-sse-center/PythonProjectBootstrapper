@@ -146,7 +146,7 @@ def CopyToOutputDir(
         yaml.dump(merged_manifest, manifest_file)
 
     # copy temporary directory to final output directory and remove temporary directory
-    shutil.copytree(src_dir, dest_dir, dirs_exist_ok=True, copy_function=shutil.copy2)
+    shutil.copytree(src_dir, dest_dir, dirs_exist_ok=True, copy_function=shutil.copy)
     shutil.rmtree(src_dir)
 
 
