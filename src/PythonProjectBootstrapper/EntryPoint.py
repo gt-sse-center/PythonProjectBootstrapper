@@ -22,8 +22,8 @@ from dbrownell_Common.ContextlibEx import ExitStack
 from dbrownell_Common import PathEx
 from PythonProjectBootstrapper import __version__
 from PythonProjectBootstrapper.ProjectGenerationUtils import (
-    _CopyToOutputDir,
-    _DisplayPrompt,
+    CopyToOutputDir,
+    DisplayPrompt,
 )
 
 # The following imports are used in cookiecutter hooks. Import them here to
@@ -200,8 +200,8 @@ def _ExecuteOutputDir(
         accept_hooks=True,
     )
 
-    _CopyToOutputDir(src_dir=tmp_dir, dest_dir=output_dir)
-    _DisplayPrompt(output_dir=output_dir)
+    CopyToOutputDir(src_dir=tmp_dir, dest_dir=output_dir)
+    DisplayPrompt(output_dir=output_dir)
 
 
 if __name__ == "__main__":

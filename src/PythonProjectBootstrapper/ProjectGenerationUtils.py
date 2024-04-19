@@ -23,14 +23,17 @@ import shutil  # pylint: disable=unused-import, wrong-import-order
 import textwrap  # pylint: disable=unused-import, wrong-import-order
 
 
-HASH_ALG = hashlib.sha256
+HASH_ALG = "sha256"
 
 
 # ----------------------------------------------------------------------
-def _GenerateFileHash(filepath: Path, hash_fn) -> str:
+def _GenerateFileHash(filepath: Path, hash_fn=HASH_ALG) -> str:
     PathEx.EnsureFile(filepath)
     with open(filepath, "rb") as file:
-        hash_value = hashlib.file_digest(file, hash_fn).hexdigest()
+        file_contents = file.read()
+        h = hashlib.new(hash_fn)
+        h.update(file_contents)
+        hash_value = h.hexdigest()
 
     return hash_value
 
@@ -80,7 +83,7 @@ def _ConditionallyRemoveUnchangedTemplateFiles(
 
 
 # ----------------------------------------------------------------------
-def _CopyToOutputDir(
+def CopyToOutputDir(
     src_dir: Path,
     dest_dir: Path,
 ) -> None:
@@ -148,7 +151,7 @@ def _CopyToOutputDir(
 
 
 # ----------------------------------------------------------------------
-def _DisplayPrompt(output_dir: Path) -> None:
+def DisplayPrompt(output_dir: Path) -> None:
     PathEx.EnsureDir(output_dir)
 
     prompt_text_path = PathEx.EnsureFile(output_dir / "prompt_text.yml")

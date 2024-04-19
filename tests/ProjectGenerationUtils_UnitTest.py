@@ -26,8 +26,8 @@ from PythonProjectBootstrapper.ProjectGenerationUtils import (
 def dirs_equal(dir1: Path, dir2: Path) -> bool:
     # Check that 2 given directories have the same structure and files have the same contents EXCEPT for any manifest.yml files
 
-    generated_files1: list[PurePath] = []
-    generated_files2: list[PurePath] = []
+    generated_files1: list[Path] = []
+    generated_files2: list[Path] = []
 
     for root, _, files in os.walk(dir1):
         if ".manifest.yml" in files:
