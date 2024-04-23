@@ -23,7 +23,7 @@ from PythonProjectBootstrapper.ProjectGenerationUtils import (
 
 
 # ----------------------------------------------------------------------
-def dirs_equal(dir1: Path, dir2: Path) -> bool:
+def _dirs_equal(dir1: Path, dir2: Path) -> bool:
     # Check that 2 given directories have the same structure and files have the same contents EXCEPT for any manifest.yml files
 
     generated_files1: list[Path] = []
@@ -75,7 +75,7 @@ def test_CreateManifest(fs, os_type):
 
     fs.create_dir("/emptydir")
 
-    test_manifest = _CreateManifest(generated_dir=Path("/"))
+    test_manifest = _CreateManifest(generated_dir=Path("./"))
 
     file_names = set(file[0] for file in files)
 
@@ -113,7 +113,7 @@ def test_ConditionalRemoveTemplateFiles_no_changed_files(fs, os_type):
         output_dir=Path("output_dir"),
     )
 
-    assert dirs_equal(output_dir_path, new_output_path)
+    assert _dirs_equal(output_dir_path, new_output_path)
 
 
 # ----------------------------------------------------------------------
@@ -148,7 +148,7 @@ def testConditionalRemoveTemplateFiles_files_changed(fs, os_type):
         output_dir=output_dir_path,
     )
 
-    assert dirs_equal(output_dir_path, expected_output_dir)
+    assert _dirs_equal(output_dir_path, expected_output_dir)
 
 
 # ----------------------------------------------------------------------
@@ -222,5 +222,5 @@ def test_CopyToOutputDir_no_prompt(fs, os_type):
 
     CopyToOutputDir(src_dir=src, dest_dir=dest)
 
-    assert dirs_equal(expected, dest)
+    assert _dirs_equal(expected, dest)
     PathEx.EnsureExists(dest / ".manifest.yml")
