@@ -55,18 +55,11 @@ def _dirs_equal(dir1: Path, dir2: Path) -> bool:
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
-
-
-@pytest.mark.parametrize(
-    "os_type", [fake_fs.OSType.WINDOWS, fake_fs.OSType.MACOS, fake_fs.OSType.LINUX]
-)
-def test_CreateManifest(fs, os_type):
+def test_CreateManifest(fs):
     # Test for the following:
     #   - All created files and only files exist in the manifest
     #   - Files with same content have the same hash
     #   - Files with different contents have different hash
-
-    fs.os = os_type
 
     files = [("test/file1", "abc"), ("test/file1repeat", "abc"), ("test/file2", "def")]
 
@@ -85,12 +78,7 @@ def test_CreateManifest(fs, os_type):
 
 
 # ----------------------------------------------------------------------
-@pytest.mark.parametrize(
-    "os_type", [fake_fs.OSType.WINDOWS, fake_fs.OSType.MACOS, fake_fs.OSType.LINUX]
-)
-def test_ConditionalRemoveTemplateFiles_no_changed_files(fs, os_type):
-    fs.os = os_type
-
+def test_ConditionalRemoveTemplateFiles_no_changed_files(fs):
     output_dir_path = Path("output_dir")
     new_output_path = Path("new_output_dir")
 
@@ -117,12 +105,7 @@ def test_ConditionalRemoveTemplateFiles_no_changed_files(fs, os_type):
 
 
 # ----------------------------------------------------------------------
-@pytest.mark.parametrize(
-    "os_type", [fake_fs.OSType.WINDOWS, fake_fs.OSType.MACOS, fake_fs.OSType.LINUX]
-)
-def testConditionalRemoveTemplateFiles_files_changed(fs, os_type):
-    fs.os = os_type
-
+def testConditionalRemoveTemplateFiles_files_changed(fs):
     output_dir_path = Path("output_dir")
     new_output_path = Path("new_output_dir")
     expected_output_dir = Path("expected_dir")
@@ -152,17 +135,8 @@ def testConditionalRemoveTemplateFiles_files_changed(fs, os_type):
 
 
 # ----------------------------------------------------------------------
-@pytest.mark.parametrize(
-    "os_type, overwrite",
-    list(
-        itertools.product(
-            [fake_fs.OSType.WINDOWS, fake_fs.OSType.MACOS, fake_fs.OSType.LINUX], ["y", "n"]
-        )
-    ),
-)
-def test_CopyToOutputDir_overwritePrompt(fs, os_type, overwrite):
-    fs.os = os_type
-
+@pytest.mark.parametrize("overwrite", ["y", "n"])
+def test_CopyToOutputDir_overwritePrompt(fs, overwrite):
     src = Path("src")
     src2 = Path("src2")
     dest = Path("dest")
@@ -195,15 +169,10 @@ def test_CopyToOutputDir_overwritePrompt(fs, os_type, overwrite):
 
 
 # ----------------------------------------------------------------------
-@pytest.mark.parametrize(
-    "os_type", [fake_fs.OSType.WINDOWS, fake_fs.OSType.MACOS, fake_fs.OSType.LINUX]
-)
-def test_CopyToOutputDir_no_prompt(fs, os_type):
+def test_CopyToOutputDir_no_prompt(fs):
     # Test for the following:
     #   - All created files and directories are copied into the dest
     #   - All contents of files are the same in src and dest
-    fs.os = os_type
-
     files = [(Path("test/file1"), "abc"), (Path("test/file2"), "def")]
     emptydir_path = Path("emptydir")
 

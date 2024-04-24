@@ -50,7 +50,7 @@ def _CreateManifest(generated_dir: Path) -> dict[str, str]:
     for genfile in generated_files:
         PathEx.EnsureFile(genfile)
         rel_path = PathEx.CreateRelativePath(generated_dir, genfile)
-        manifest_dict[str(rel_path)] = _GenerateFileHash(filepath=genfile, hash_fn=HASH_ALG)
+        manifest_dict[rel_path.as_posix()] = _GenerateFileHash(filepath=genfile, hash_fn=HASH_ALG)
 
     return manifest_dict
 
