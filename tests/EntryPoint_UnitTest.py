@@ -6,6 +6,8 @@
 # ----------------------------------------------------------------------
 """Unit tests for EntryPoint.py"""
 
+import pytest
+
 from pathlib import Path
 from unittest.mock import patch
 
@@ -24,19 +26,14 @@ def test_Version():
 
 
 # ----------------------------------------------------------------------
+@pytest.mark.skip(
+    reason="This test has been removed due to the pre gen/post gen hooks not being run"
+)
 def test_Standard():
-    # This test has been removed due to the pre gen/post gen hooks not being run
-    # likely due to issues with the working directory and the hooks not being found
+    with patch("PythonProjectBootstrapper.EntryPoint.cookiecutter") as mock_cookiecutter:
+        repo_root = PathEx.EnsureDir(Path(__file__).parent.parent)
+        result = CliRunner().invoke(app, ["package", str(repo_root), "--yes"])
 
-    # with patch("PythonProjectBootstrapper.EntryPoint.cookiecutter") as mock_cookiecutter:
-    #   repo_root = PathEx.EnsureDir(Path(__file__).parent.parent)
-
-    #   result = CliRunner().invoke(app, ["package", str(repo_root), "--yes"])
-
-    #   sys.stdout.write(f"\n\n\n\n{result.stdout}\n\n\n")
-
-    #   assert result.exit_code == 0
-    #   assert "This project creates a Python package" in result.stdout
-    #   assert len(mock_cookiecutter.call_args_list) == 1
-
-    assert True
+        assert result.exit_code == 0
+        assert "This project creates a Python package" in result.stdout
+        assert len(mock_cookiecutter.call_args_list) == 1
