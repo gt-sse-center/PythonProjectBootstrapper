@@ -7,18 +7,16 @@
 import pytest
 import pyfakefs.fake_filesystem as fake_fs
 import os
-import itertools
 from unittest.mock import patch
 
 from pathlib import Path, PurePath, PurePosixPath
 
 from dbrownell_Common import PathEx
 from PythonProjectBootstrapper.ProjectGenerationUtils import (
-    _CreateManifest,
-    _ConditionallyRemoveUnchangedTemplateFiles,
+    CreateManifest,
+    ConditionallyRemoveUnchangedTemplateFiles,
     CopyToOutputDir,
-    _GenerateFileHash,
-    HASH_ALG,
+    GenerateFileHash,
 )
 
 
@@ -41,8 +39,8 @@ def _dirs_equal(dir1: Path, dir2: Path) -> bool:
 
         generated_files2 += [Path(root) / Path(file) for file in files]
 
-    contents1 = [_GenerateFileHash(file, hash_fn=HASH_ALG) for file in generated_files1]
-    contents2 = [_GenerateFileHash(file, hash_fn=HASH_ALG) for file in generated_files2]
+    contents1 = [GenerateFileHash(file) for file in generated_files1]
+    contents2 = [GenerateFileHash(file) for file in generated_files2]
     rel_gen_1 = [PathEx.CreateRelativePath(dir1, file) for file in generated_files1]
     rel_gen_2 = [PathEx.CreateRelativePath(dir2, file) for file in generated_files2]
 
@@ -68,7 +66,7 @@ def test_CreateManifest(fs):
 
     fs.create_dir("/emptydir")
 
-    test_manifest = _CreateManifest(generated_dir=Path("./"))
+    test_manifest = CreateManifest(generated_dir=Path("./"))
 
     file_names = set(file[0] for file in files)
 
@@ -92,10 +90,10 @@ def test_ConditionalRemoveTemplateFiles_no_changed_files(fs):
 
     fs.create_file(output_dir_path / "testFile3", contents="hello")
 
-    existing_manifest = _CreateManifest(generated_dir=output_dir_path)
-    new_manifest = _CreateManifest(generated_dir=new_output_path)
+    existing_manifest = CreateManifest(generated_dir=output_dir_path)
+    new_manifest = CreateManifest(generated_dir=new_output_path)
 
-    _ConditionallyRemoveUnchangedTemplateFiles(
+    ConditionallyRemoveUnchangedTemplateFiles(
         new_manifest_dict=new_manifest,
         existing_manifest_dict=existing_manifest,
         output_dir=Path("output_dir"),
@@ -120,12 +118,12 @@ def testConditionalRemoveTemplateFiles_files_changed(fs):
     file_to_change = fs.create_file(output_dir_path / "testFile3", contents="hello")
     fs.create_file(expected_output_dir / "testFile3", contents="hi")
 
-    existing_manifest = _CreateManifest(generated_dir=output_dir_path)
+    existing_manifest = CreateManifest(generated_dir=output_dir_path)
     file_to_change.set_contents("hi")
 
-    new_manifest = _CreateManifest(generated_dir=new_output_path)
+    new_manifest = CreateManifest(generated_dir=new_output_path)
 
-    _ConditionallyRemoveUnchangedTemplateFiles(
+    ConditionallyRemoveUnchangedTemplateFiles(
         new_manifest_dict=new_manifest,
         existing_manifest_dict=existing_manifest,
         output_dir=output_dir_path,
@@ -165,7 +163,7 @@ def test_CopyToOutputDir_overwritePrompt(fs, overwrite):
         with open(dest / path, "r") as destfile:
             assert content == destfile.read()
 
-    PathEx.EnsureExists(dest / ".manifest.yml")
+    assert (dest / ".manifest.yml").is_file()
 
 
 # ----------------------------------------------------------------------
@@ -192,4 +190,4 @@ def test_CopyToOutputDir_no_prompt(fs):
     CopyToOutputDir(src_dir=src, dest_dir=dest)
 
     assert _dirs_equal(expected, dest)
-    PathEx.EnsureExists(dest / ".manifest.yml")
+    assert (dest / ".manifest.yml").is_file()
