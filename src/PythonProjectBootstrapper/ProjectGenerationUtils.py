@@ -115,9 +115,11 @@ def CopyToOutputDir(
             current_file_hash: str = GenerateFileHash(filepath=output_dir_filepath)
 
             # Changes detected in file and file modified by xser (changes do not stem only from changes in the contents of the template file)
-            assert rel_filepath in existing_manifest.keys()
 
-            if current_file_hash not in (generated_hash, existing_manifest[rel_filepath]):
+            if rel_filepath in existing_manifest.keys() and current_file_hash not in (
+                generated_hash,
+                existing_manifest[rel_filepath],
+            ):
                 while True:
                     sys.stdout.write(
                         f"\nWould you like to overwrite your changes in {str(output_dir_filepath)}? [yes/no]: "
