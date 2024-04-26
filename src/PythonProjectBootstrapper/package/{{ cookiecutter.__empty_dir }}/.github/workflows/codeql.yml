@@ -17,7 +17,7 @@ on:
   pull_request:
     branches: [ "main" ]
   schedule:
-    - cron: '{{ range(0, 60) | random }} {{ range(0, 24) | random }} * * *'
+    - cron: '0 0 * * *'
 
 jobs:
   analyze:

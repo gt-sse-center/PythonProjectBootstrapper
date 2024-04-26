@@ -21,6 +21,10 @@ from cookiecutter.main import cookiecutter
 from dbrownell_Common.ContextlibEx import ExitStack
 from dbrownell_Common import PathEx
 from PythonProjectBootstrapper import __version__
+from PythonProjectBootstrapper.ProjectGenerationUtils import (
+    CopyToOutputDir,
+    DisplayPrompt,
+)
 
 # The following imports are used in cookiecutter hooks. Import them here to
 # ensure that they are frozen when creating binaries,
@@ -166,7 +170,13 @@ def _ExecuteOutputDir(
     replay: bool,
     yes: bool,
 ) -> None:
+    if not (output_dir / ".git").is_dir():
+        raise Exception(f"{output_dir} is not a git repository.")
+
     project_dir = PathEx.EnsureDir(_project_root_dir / project.value)
+
+    # create temporary directory for cookiecutter output
+    tmp_dir = PathEx.CreateTempDirectory()
 
     # Does the project have a startup script? If so, invoke it dynamically.
     potential_startup_script = project_dir / "hooks" / "startup.py"
@@ -177,21 +187,22 @@ def _ExecuteOutputDir(
 
             execute_func = getattr(module, "Execute", None)
             if execute_func:
-                if execute_func(project_dir, output_dir, yes=yes) is False:
+                if execute_func(project_dir, tmp_dir, yes=yes) is False:
                     return
 
+    # generate project in temporary directory so we can avoid overwriting files without user approval
     cookiecutter(
         str(project_dir),
-        output_dir=str(output_dir),
+        output_dir=str(tmp_dir),
         config_file=str(configuration_filename) if configuration_filename is not None else None,
         replay=replay,
         overwrite_if_exists=True,
         accept_hooks=True,
     )
 
+    CopyToOutputDir(src_dir=tmp_dir, dest_dir=output_dir)
+    DisplayPrompt(output_dir=output_dir)
 
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
-# ----------------------------------------------------------------------
+
 if __name__ == "__main__":
     app()  # pragma: no cover

@@ -39,7 +39,7 @@ dependencies = [
     "cookiecutter == 2.*",
     "dbrownell_Common",
     "rich == 13.*",
-    "typer ~= 0.9"
+    "typer ~= 0.9",
 ]
 
 dynamic = [
@@ -51,6 +51,7 @@ readme = "README.md"
 [project.optional-dependencies]
 dev = [
     "dbrownell_DevTools",
+    "pyfakefs == 5.*",
 ]
 
 package = [

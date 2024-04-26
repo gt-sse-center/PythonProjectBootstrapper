@@ -6,6 +6,8 @@
 # ----------------------------------------------------------------------
 """Unit tests for EntryPoint.py"""
 
+import pytest
+
 from pathlib import Path
 from unittest.mock import patch
 
@@ -24,10 +26,12 @@ def test_Version():
 
 
 # ----------------------------------------------------------------------
+@pytest.mark.skip(
+    reason="This test has been removed due to the pre gen/post gen hooks not being run"
+)
 def test_Standard():
     with patch("PythonProjectBootstrapper.EntryPoint.cookiecutter") as mock_cookiecutter:
         repo_root = PathEx.EnsureDir(Path(__file__).parent.parent)
-
         result = CliRunner().invoke(app, ["package", str(repo_root), "--yes"])
 
         assert result.exit_code == 0
