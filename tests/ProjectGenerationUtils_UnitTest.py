@@ -5,11 +5,10 @@
 # |
 # ----------------------------------------------------------------------
 import pytest
-import pyfakefs.fake_filesystem as fake_fs
 import os
 from unittest.mock import patch
 
-from pathlib import Path, PurePath, PurePosixPath
+from pathlib import Path
 
 from dbrownell_Common import PathEx
 from PythonProjectBootstrapper.ProjectGenerationUtils import (

@@ -40,7 +40,6 @@ dependencies = [
     "dbrownell_Common",
     "rich == 13.*",
     "typer ~= 0.9",
-    "pyfakefs == 5.*",
 ]
 
 dynamic = [
@@ -52,6 +51,7 @@ readme = "README.md"
 [project.optional-dependencies]
 dev = [
     "dbrownell_DevTools",
+    "pyfakefs == 5.*",
 ]
 
 package = [

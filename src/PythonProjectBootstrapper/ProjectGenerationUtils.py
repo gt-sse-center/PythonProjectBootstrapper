@@ -26,12 +26,17 @@ import textwrap  # pylint: disable=unused-import, wrong-import-order
 # ----------------------------------------------------------------------
 def GenerateFileHash(filepath: Path, hash_fn="sha256") -> str:
     PathEx.EnsureFile(filepath)
-    with open(filepath, "rb") as file:
-        file_contents = file.read()
-        h = hashlib.new(hash_fn)
-        h.update(file_contents)
-        hash_value = h.hexdigest()
 
+    hasher = hashlib.new(hash_fn)
+    with open(filepath, "rb") as file:
+        while True:
+            chunk = file.read(8192)
+            if not chunk:
+                break
+
+            hasher.update(chunk)
+
+    hash_value = hasher.hexdigest()
     return hash_value
 
 
@@ -59,7 +64,7 @@ def ConditionallyRemoveUnchangedTemplateFiles(
     # Removes any template files no longer being generated as long as the file was never modified by the user
 
     # files no longer in template
-    removed_template_files: set[Path] = set(existing_manifest_dict.keys()) - set(
+    removed_template_files: set[str] = set(existing_manifest_dict.keys()) - set(
         new_manifest_dict.keys()
     )
 
