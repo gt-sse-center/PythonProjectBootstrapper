@@ -9,7 +9,7 @@
 import importlib
 import sys
 
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 from typing import Annotated, Optional
 
@@ -20,6 +20,8 @@ from typer.core import TyperGroup  # type: ignore [import-untyped]
 from cookiecutter.main import cookiecutter
 from dbrownell_Common.ContextlibEx import ExitStack
 from dbrownell_Common import PathEx
+from dbrownell_Common.Streams.DoneManager import DoneManager
+
 from PythonProjectBootstrapper import __version__
 from PythonProjectBootstrapper.ProjectGenerationUtils import (
     CopyToOutputDir,
@@ -51,10 +53,17 @@ app = typer.Typer(
 
 
 # ----------------------------------------------------------------------
-class ProjectType(str, Enum):
-    """Defines the different types of projects that can be specified on the command line."""
+# Dynamically create the ProjectType enumeration based on the directories found in this dir.
+_project_types: list[str] = []
 
-    package = "package"
+for file_item in Path(__file__).parent.iterdir():
+    if not file_item.is_dir():
+        continue
+
+    _project_types.append(file_item.name)
+
+ProjectType = StrEnum("ProjectType", _project_types)
+del _project_types
 
 
 # ----------------------------------------------------------------------
@@ -88,6 +97,11 @@ _version_option = typer.Option(
     is_eager=True,
 )
 
+_skip_prompts_option = typer.Option(
+    "--skip-prompts",
+    help="Do not display prompts after generating content.",
+)
+
 
 # ----------------------------------------------------------------------
 # The cookiecutter project dir must be accessed in different ways depending on whether the code is:
@@ -113,6 +127,7 @@ if getattr(sys, "frozen", False):
         configuration_filename: Annotated[Optional[Path], _configuration_filename_option] = None,
         replay: Annotated[bool, _replay_option] = False,
         yes: Annotated[bool, _yes_option] = False,
+        skip_prompts: Annotated[bool, _skip_prompts_option] = False,
         version: Annotated[bool, _version_option] = False,  # pylint: disable=unused-argument
     ) -> None:
         if output_dir.is_file():
@@ -128,6 +143,7 @@ if getattr(sys, "frozen", False):
             configuration_filename,
             replay=replay,
             yes=yes,
+            skip_prompts=skip_prompts,
         )
 
     # ----------------------------------------------------------------------
@@ -145,6 +161,7 @@ else:
         configuration_filename: Annotated[Optional[Path], _configuration_filename_option] = None,
         replay: Annotated[bool, _replay_option] = False,
         yes: Annotated[bool, _yes_option] = False,
+        skip_prompts: Annotated[bool, _skip_prompts_option] = False,
         version: Annotated[bool, _version_option] = False,  # pylint: disable=unused-argument
     ) -> None:
         _ExecuteOutputDir(
@@ -153,6 +170,7 @@ else:
             configuration_filename,
             replay=replay,
             yes=yes,
+            skip_prompts=skip_prompts,
         )
 
 
@@ -169,6 +187,7 @@ def _ExecuteOutputDir(
     *,
     replay: bool,
     yes: bool,
+    skip_prompts: bool,
 ) -> None:
     if not (output_dir / ".git").is_dir():
         raise Exception(f"{output_dir} is not a git repository.")
@@ -190,18 +209,21 @@ def _ExecuteOutputDir(
                 if execute_func(project_dir, tmp_dir, yes=yes) is False:
                     return
 
-    # generate project in temporary directory so we can avoid overwriting files without user approval
-    cookiecutter(
-        str(project_dir),
-        output_dir=str(tmp_dir),
-        config_file=str(configuration_filename) if configuration_filename is not None else None,
-        replay=replay,
-        overwrite_if_exists=True,
-        accept_hooks=True,
-    )
+    with DoneManager.Create(sys.stdout, "\nGenerating content..."):
+        # generate project in temporary directory so we can avoid overwriting files without user approval
+        cookiecutter(
+            str(project_dir),
+            output_dir=str(tmp_dir),
+            config_file=str(configuration_filename) if configuration_filename is not None else None,
+            replay=replay,
+            overwrite_if_exists=True,
+            accept_hooks=True,
+        )
 
     CopyToOutputDir(src_dir=tmp_dir, dest_dir=output_dir)
-    DisplayPrompt(output_dir=output_dir)
+
+    if not skip_prompts:
+        DisplayPrompt(output_dir=output_dir)
 
 
 if __name__ == "__main__":
