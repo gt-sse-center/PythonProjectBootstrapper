@@ -67,7 +67,6 @@ Repository = "{{ cookiecutter.github_url | escape_double_quotes }}/{{ cookiecutt
 [project.scripts]
 {{ cookiecutter.pypi_project_name }} = "{{ cookiecutter.pypi_project_name | escape_double_quotes }}:EntryPoint.app"
 
-
 # ----------------------------------------------------------------------
 # |
 # |  black
@@ -102,7 +101,7 @@ max-args = 10
 max-parents = 15
 
 [tool.pylint.main]
-ignore-patterns = [
+ignore-paths = [
     # Note that the pylint vscode extension has trouble with wrapping these patterns in quotes
     # (which is required to parse the file correctly). Because of this, each pattern must be
     # converted to a glob pattern and specified in the pylint vscode settings as well.
