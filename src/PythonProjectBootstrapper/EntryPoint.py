@@ -234,10 +234,10 @@ def _ExecuteOutputDir(
             accept_hooks=True,
         )
 
-    CopyToOutputDir(src_dir=tmp_dir, dest_dir=output_dir)
+    modifications = CopyToOutputDir(src_dir=tmp_dir, dest_dir=output_dir)
 
     if not skip_prompts:
-        DisplayPrompt(output_dir=output_dir)
+        DisplayPrompt(output_dir=output_dir, modifications=modifications)
 
 
 if __name__ == "__main__":

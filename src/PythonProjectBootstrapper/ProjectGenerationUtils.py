@@ -60,13 +60,16 @@ def ConditionallyRemoveUnchangedTemplateFiles(
     new_manifest_dict: dict[str, str],
     existing_manifest_dict: dict[str, str],
     output_dir: Path,
-) -> None:
-    # Removes any template files no longer being generated as long as the file was never modified by the user
+) -> set[str]:
+    # Removes any template files no longer being generated as long as the file was never modified by the user.
+    # Returns set of file paths that were removed
 
     # files no longer in template
     removed_template_files: set[str] = set(existing_manifest_dict.keys()) - set(
         new_manifest_dict.keys()
     )
+
+    deleted_files: set[str] = set()
 
     PathEx.EnsureDir(output_dir)
 
@@ -79,22 +82,37 @@ def ConditionallyRemoveUnchangedTemplateFiles(
             original_hash = existing_manifest_dict[removed_file_rel_path]
 
             if current_hash == original_hash:
+                deleted_files.add(removed_full_path.as_posix())
                 removed_full_path.unlink()
+
+    return deleted_files
 
 
 # ----------------------------------------------------------------------
 def CopyToOutputDir(
     src_dir: Path,
     dest_dir: Path,
-) -> None:
+):
     # Copies all generated files into the output directory and handles the creation/updating of the manifest file
 
     PathEx.EnsureDir(src_dir)
     PathEx.EnsureDir(dest_dir)
 
+    prompt_file = PathEx.EnsureFile(src_dir / "prompt_text.yml")
+    shutil.copy2(prompt_file, dest_dir)
+    prompt_file.unlink()
+    PathEx.EnsureFile(dest_dir / "prompt_text.yml")
+
     # existing_manifest will be populated/updated as necessary and saved
     generated_manifest: dict[str, str] = CreateManifest(src_dir)
+
     existing_manifest: dict[str, str] = {}
+
+    overwritten_files: set[str] = set()
+    added_files: set[str] = set()
+    deleted_files: set[str] = set()
+    modified_template_files: set[str] = set()
+    unchanged_files_deleted: set[str] = set()
 
     potential_manifest: Path = dest_dir / ".manifest.yml"
 
@@ -103,7 +121,7 @@ def CopyToOutputDir(
         with open(potential_manifest, "r") as existing_manifest_file:
             existing_manifest = yaml.load(existing_manifest_file, Loader=yaml.Loader)
 
-        ConditionallyRemoveUnchangedTemplateFiles(
+        unchanged_files_deleted = ConditionallyRemoveUnchangedTemplateFiles(
             new_manifest_dict=generated_manifest,
             existing_manifest_dict=existing_manifest,
             output_dir=dest_dir,
@@ -119,8 +137,7 @@ def CopyToOutputDir(
         if output_dir_filepath.is_file():
             current_file_hash: str = GenerateFileHash(filepath=output_dir_filepath)
 
-            # Changes detected in file and file modified by xser (changes do not stem only from changes in the contents of the template file)
-
+            # Changes detected in file and file modified by user (changes do not stem only from changes in the contents of the template file)
             if rel_filepath in existing_manifest.keys() and current_file_hash not in (
                 generated_hash,
                 existing_manifest[rel_filepath],
@@ -132,17 +149,25 @@ def CopyToOutputDir(
                     overwrite = input().strip().lower()
 
                     if overwrite in ["yes", "y"]:
+                        overwritten_files.add(output_dir_filepath.as_posix())
                         break
 
                     # Here, we are copying the file from the output directory to the temporary directory in the case that the user answers "no"
                     # to whether or not they would like to overwrite their changes. This implementation builds the final directory in the temporary directory then copies everything over.
-                    # This makes it much easier to copy over generated files since we do not need to case on whether we are copying over a directory or a file (for example if we generated an empty directory)
+                    # This makes it much easier to copy over generated files since we do not need to case on whether we are copying over a directory or a file
 
                     if overwrite in ["no", "n"]:
                         merged_manifest[rel_filepath] = existing_manifest[rel_filepath]
                         shutil.copy2(output_dir_filepath, src_dir / rel_filepath)
                         break
+            elif rel_filepath in existing_manifest.keys():
+                if (
+                    current_file_hash != generated_hash
+                    and current_file_hash == existing_manifest[rel_filepath]
+                ):
+                    modified_template_files.add(output_dir_filepath.as_posix())
         else:
+            added_files.add(output_dir_filepath.as_posix())
             merged_manifest[rel_filepath] = generated_hash
 
     # create and save manifest
@@ -159,9 +184,13 @@ def CopyToOutputDir(
     )
     shutil.rmtree(src_dir)
 
+    deleted_files = unchanged_files_deleted - added_files
+
+    return [deleted_files, added_files, overwritten_files, modified_template_files]
+
 
 # ----------------------------------------------------------------------
-def DisplayPrompt(output_dir: Path) -> None:
+def DisplayPrompt(output_dir: Path, modifications) -> None:
     PathEx.EnsureDir(output_dir)
 
     prompt_text_path = PathEx.EnsureFile(output_dir / "prompt_text.yml")
@@ -175,6 +204,24 @@ def DisplayPrompt(output_dir: Path) -> None:
     border_colors = itertools.cycle(
         ["yellow", "blue", "magenta", "cyan", "green"],
     )
+
+    sys.stdout.write("\n\n")
+
+    labels = ["Deleted", "Added", "Overwritten", "Modified Template "]
+
+    for label, mods in zip(labels, list(modifications)):
+        display_mods = ""
+        for file_changed in mods:
+            display_mods += file_changed + "\n"
+        print(
+            Panel(
+                display_mods.rstrip(),
+                border_style=next(border_colors),
+                padding=1,
+                title=f"0/{len(_prompts)} {label} Files",
+                title_align="left",
+            )
+        )
 
     sys.stdout.write("\n\n")
 
