@@ -98,19 +98,18 @@ def CopyToOutputDir(
     PathEx.EnsureDir(src_dir)
     PathEx.EnsureDir(dest_dir)
 
-    prompt_file = PathEx.EnsureFile(src_dir / "prompt_text.yml")
-    shutil.copy2(prompt_file, dest_dir)
-    prompt_file.unlink()
-    PathEx.EnsureFile(dest_dir / "prompt_text.yml")
+    prompt_file = src_dir / "prompt_text.yml"
+    if prompt_file.is_file():
+        shutil.copy2(prompt_file, dest_dir)
+        prompt_file.unlink()
+        PathEx.EnsureFile(dest_dir / "prompt_text.yml")
 
     # existing_manifest will be populated/updated as necessary and saved
     generated_manifest: dict[str, str] = CreateManifest(src_dir)
-
     existing_manifest: dict[str, str] = {}
 
     overwritten_files: set[str] = set()
     added_files: set[str] = set()
-    deleted_files: set[str] = set()
     modified_template_files: set[str] = set()
     unchanged_files_deleted: set[str] = set()
 
@@ -120,6 +119,13 @@ def CopyToOutputDir(
     if potential_manifest.is_file():
         with open(potential_manifest, "r") as existing_manifest_file:
             existing_manifest = yaml.load(existing_manifest_file, Loader=yaml.Loader)
+
+        # Removing prompt_text.yml from the manifest for backward compatability.
+        # Previous iterations of PythonProjectBootstrapper saved "prompt_text.yml" in the manifest file when it should not have been there
+        # (the manifest was created using the contents of the temporary directory and prompt_text.yml was there but was removed from the output directory)
+        # This results in "prompt_text.yml" being listed as a removed file since it exists in the manifest but not in the output directory
+        if "prompt_text.yml" in existing_manifest.keys():
+            del existing_manifest["prompt_text.yml"]
 
         unchanged_files_deleted = ConditionallyRemoveUnchangedTemplateFiles(
             new_manifest_dict=generated_manifest,
@@ -160,12 +166,13 @@ def CopyToOutputDir(
                         merged_manifest[rel_filepath] = existing_manifest[rel_filepath]
                         shutil.copy2(output_dir_filepath, src_dir / rel_filepath)
                         break
-            elif rel_filepath in existing_manifest.keys():
-                if (
-                    current_file_hash != generated_hash
-                    and current_file_hash == existing_manifest[rel_filepath]
-                ):
-                    modified_template_files.add(output_dir_filepath.as_posix())
+
+            # Looking at a template file, contents this generation are different, and contents were untouched by user
+            elif rel_filepath in existing_manifest.keys() and (
+                current_file_hash != generated_hash
+                and current_file_hash == existing_manifest[rel_filepath]
+            ):
+                modified_template_files.add(output_dir_filepath.as_posix())
         else:
             added_files.add(output_dir_filepath.as_posix())
             merged_manifest[rel_filepath] = generated_hash
@@ -184,7 +191,7 @@ def CopyToOutputDir(
     )
     shutil.rmtree(src_dir)
 
-    deleted_files = unchanged_files_deleted - added_files
+    deleted_files: set[str] = unchanged_files_deleted - added_files
 
     return [deleted_files, added_files, overwritten_files, modified_template_files]
 
@@ -207,7 +214,9 @@ def DisplayPrompt(output_dir: Path, modifications) -> None:
 
     sys.stdout.write("\n\n")
 
-    labels = ["Deleted", "Added", "Overwritten", "Modified Template "]
+    # ----------------------------------------------------------------------
+    # Print out changes in files
+    labels = ["Deleted", "Added", "Overwritten", "Modified Template"]
 
     for label, mods in zip(labels, list(modifications)):
         display_mods = ""
@@ -218,13 +227,15 @@ def DisplayPrompt(output_dir: Path, modifications) -> None:
                 display_mods.rstrip(),
                 border_style=next(border_colors),
                 padding=1,
-                title=f"0/{len(_prompts)} {label} Files",
+                title=f"{label} Files",
                 title_align="left",
             )
         )
 
     sys.stdout.write("\n\n")
 
+    # ----------------------------------------------------------------------
+    # Print out saved prompts
     for prompt_index, ((_, title), prompt) in enumerate(sorted(_prompts.items())):
         print(
             Panel(
