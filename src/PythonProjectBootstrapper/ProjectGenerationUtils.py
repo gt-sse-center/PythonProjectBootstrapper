@@ -92,7 +92,7 @@ def ConditionallyRemoveUnchangedTemplateFiles(
 def CopyToOutputDir(
     src_dir: Path,
     dest_dir: Path,
-):
+) -> list[set[str]]:
     # Copies all generated files into the output directory and handles the creation/updating of the manifest file
 
     PathEx.EnsureDir(src_dir)
@@ -197,7 +197,7 @@ def CopyToOutputDir(
 
 
 # ----------------------------------------------------------------------
-def DisplayPrompt(output_dir: Path, modifications) -> None:
+def DisplayPrompt(output_dir: Path, modifications: list[set[str]]) -> None:
     PathEx.EnsureDir(output_dir)
 
     prompt_text_path = PathEx.EnsureFile(output_dir / "prompt_text.yml")
