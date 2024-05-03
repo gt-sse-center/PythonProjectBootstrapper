@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Annotated, Optional
 
 import typer
+import yaml
 
 from typer.core import TyperGroup  # type: ignore [import-untyped]
 
@@ -236,8 +237,18 @@ def _ExecuteOutputDir(
 
     modifications = CopyToOutputDir(src_dir=tmp_dir, dest_dir=output_dir)
 
+    prompt_text_path = PathEx.EnsureFile(output_dir / "prompt_text.yml")
+
     if not skip_prompts:
-        DisplayPrompt(output_dir=output_dir, modifications=modifications)
+        with open(prompt_text_path, "r") as prompt_file:
+            prompts = yaml.load(prompt_file, Loader=yaml.Loader)
+
+        prompt_text_path.unlink()
+
+        DisplayPrompt(output_dir=output_dir, modifications=modifications, prompts=prompts)
+
+    else:
+        prompt_text_path.unlink()
 
 
 if __name__ == "__main__":

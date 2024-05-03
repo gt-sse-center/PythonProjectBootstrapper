@@ -197,15 +197,10 @@ def CopyToOutputDir(
 
 
 # ----------------------------------------------------------------------
-def DisplayPrompt(output_dir: Path, modifications: list[set[str]]) -> None:
+def DisplayPrompt(output_dir: Path, modifications: list[set[str]], prompts: str) -> None:
     PathEx.EnsureDir(output_dir)
 
-    prompt_text_path = PathEx.EnsureFile(output_dir / "prompt_text.yml")
-
-    with open(prompt_text_path, "r") as prompt_file:
-        _prompts = yaml.load(prompt_file, Loader=yaml.Loader)
-
-    prompt_text_path.unlink()
+    _prompts = prompts
 
     # Display prompts
     border_colors = itertools.cycle(
