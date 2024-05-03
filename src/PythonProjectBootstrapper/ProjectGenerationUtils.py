@@ -200,8 +200,6 @@ def CopyToOutputDir(
 def DisplayPrompt(output_dir: Path, modifications: list[set[str]], prompts: str) -> None:
     PathEx.EnsureDir(output_dir)
 
-    _prompts = prompts
-
     # Display prompts
     border_colors = itertools.cycle(
         ["yellow", "blue", "magenta", "cyan", "green"],
@@ -231,13 +229,13 @@ def DisplayPrompt(output_dir: Path, modifications: list[set[str]], prompts: str)
 
     # ----------------------------------------------------------------------
     # Print out saved prompts
-    for prompt_index, ((_, title), prompt) in enumerate(sorted(_prompts.items())):
+    for prompt_index, ((_, title), prompt) in enumerate(sorted(prompts.items())):
         print(
             Panel(
                 prompt.rstrip(),
                 border_style=next(border_colors),
                 padding=1,
-                title=f"[{prompt_index + 1}/{len(_prompts)}] {title}",
+                title=f"[{prompt_index + 1}/{len(prompts)}] {title}",
                 title_align="left",
             ),
         )
