@@ -98,7 +98,7 @@ def test_ConditionalRemoveTemplateFiles_no_changed_files(fs):
         output_dir=Path("output_dir"),
     )
 
-    assert deleted_files == [str(output_dir_path / "testFile3")]
+    assert deleted_files == [(output_dir_path / "testFile3").as_posix()]
     assert _dirs_equal(output_dir_path, new_output_path)
 
 
@@ -151,7 +151,7 @@ def test_CopyToOutputDir_overwritePrompt(fs, overwrite):
 
     CopyToOutputDir(src_dir=src, dest_dir=dest)
 
-    fs.get_object(str(dest / "testFile3")).set_contents(contents="hi")
+    fs.get_object((dest / "testFile3").as_posix()).set_contents(contents="hi")
 
     with patch("builtins.input", lambda *args: overwrite):
         CopyToOutputDir(src_dir=src2, dest_dir=dest)
