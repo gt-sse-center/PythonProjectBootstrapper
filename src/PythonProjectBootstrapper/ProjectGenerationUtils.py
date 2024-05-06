@@ -105,7 +105,7 @@ def ConditionallyRemoveUnchangedTemplateFiles(
 def CopyToOutputDir(
     src_dir: Path,
     dest_dir: Path,
-) -> list[list[str]]:
+) -> CopyToOutputDirResult:
     # Copies all generated files into the output directory and handles the creation/updating of the manifest file
 
     PathEx.EnsureDir(src_dir)
