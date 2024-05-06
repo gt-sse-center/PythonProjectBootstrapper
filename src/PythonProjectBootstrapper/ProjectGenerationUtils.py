@@ -75,7 +75,7 @@ def ConditionallyRemoveUnchangedTemplateFiles(
     output_dir: Path,
 ) -> list[str]:
     # Removes any template files no longer being generated as long as the file was never modified by the user.
-    # Returns set of file paths that were removed
+    # Returns a sorted list of file paths that were removed
 
     # files no longer in template
     removed_template_files: set[str] = set(existing_manifest_dict.keys()) - set(
@@ -246,7 +246,7 @@ def DisplayModifications(modifications: CopyToOutputDirResult) -> None:
 
 
 # ----------------------------------------------------------------------
-def DisplayPrompt(output_dir: Path, prompts: str) -> None:
+def DisplayPrompt(output_dir: Path, prompts: dict[tuple[int, str], str]) -> None:
     PathEx.EnsureDir(output_dir)
 
     sys.stdout.write("\n\n")
@@ -258,13 +258,13 @@ def DisplayPrompt(output_dir: Path, prompts: str) -> None:
 
     # ----------------------------------------------------------------------
     # Print out saved prompts
-    for prompt_index, ((_, title), prompt) in enumerate(sorted(prompts.items())):
+    for (prompt_index, title), prompt in sorted(prompts.items()):
         print(
             Panel(
                 prompt.rstrip(),
                 border_style=next(border_colors),
                 padding=1,
-                title=f"[{prompt_index + 1}/{len(prompts)}] {title}",
+                title=f"[{prompt_index}/{len(prompts)}] {title}",
                 title_align="left",
             ),
         )
