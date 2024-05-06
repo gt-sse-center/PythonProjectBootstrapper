@@ -4,6 +4,7 @@
 # |  Distributed under the MIT License.
 # |
 # ----------------------------------------------------------------------
+from dataclasses import dataclass, field
 import hashlib
 import itertools
 import os
@@ -12,6 +13,7 @@ from pathlib import Path
 
 from rich import print  # pylint: disable=redefined-builtin
 from rich.panel import Panel
+from rich.text import Text
 import yaml
 
 from dbrownell_Common import PathEx
@@ -21,6 +23,17 @@ from PythonProjectBootstrapper import __version__
 # ensure that they are frozen when creating binaries,
 import shutil  # pylint: disable=unused-import, wrong-import-order
 import textwrap  # pylint: disable=unused-import, wrong-import-order
+
+# TODO: find a way to verify this is the filename the post-gen-hook writes to
+prompt_filename: str = "prompt_text.yml"
+
+
+@dataclass(frozen=True)
+class CopyToOutputDirResult:
+    deleted_files: list[str] = field(default_factory=list)
+    added_files: list[str] = field(default_factory=list)
+    overwritten_files: list[str] = field(default_factory=list)
+    modified_template_files: list[str] = field(default_factory=list)
 
 
 # ----------------------------------------------------------------------
@@ -60,7 +73,7 @@ def ConditionallyRemoveUnchangedTemplateFiles(
     new_manifest_dict: dict[str, str],
     existing_manifest_dict: dict[str, str],
     output_dir: Path,
-) -> set[str]:
+) -> list[str]:
     # Removes any template files no longer being generated as long as the file was never modified by the user.
     # Returns set of file paths that were removed
 
@@ -69,7 +82,7 @@ def ConditionallyRemoveUnchangedTemplateFiles(
         new_manifest_dict.keys()
     )
 
-    deleted_files: set[str] = set()
+    deleted_files: list[str] = []
 
     PathEx.EnsureDir(output_dir)
 
@@ -82,36 +95,35 @@ def ConditionallyRemoveUnchangedTemplateFiles(
             original_hash = existing_manifest_dict[removed_file_rel_path]
 
             if current_hash == original_hash:
-                deleted_files.add(removed_full_path.as_posix())
+                deleted_files.append(removed_full_path.as_posix())
                 removed_full_path.unlink()
 
-    return deleted_files
+    return sorted(deleted_files)
 
 
 # ----------------------------------------------------------------------
 def CopyToOutputDir(
     src_dir: Path,
     dest_dir: Path,
-) -> list[set[str]]:
+) -> list[list[str]]:
     # Copies all generated files into the output directory and handles the creation/updating of the manifest file
 
     PathEx.EnsureDir(src_dir)
     PathEx.EnsureDir(dest_dir)
 
-    prompt_file = src_dir / "prompt_text.yml"
+    prompt_file = src_dir / prompt_filename
     if prompt_file.is_file():
-        shutil.copy2(prompt_file, dest_dir)
-        prompt_file.unlink()
-        PathEx.EnsureFile(dest_dir / "prompt_text.yml")
+        shutil.move(prompt_file, dest_dir)
+        PathEx.EnsureFile(dest_dir / prompt_filename)
 
     # existing_manifest will be populated/updated as necessary and saved
     generated_manifest: dict[str, str] = CreateManifest(src_dir)
     existing_manifest: dict[str, str] = {}
 
-    overwritten_files: set[str] = set()
-    added_files: set[str] = set()
-    modified_template_files: set[str] = set()
-    unchanged_files_deleted: set[str] = set()
+    overwritten_files: list[str] = []
+    added_files: list[str] = []
+    modified_template_files: list[str] = []
+    unchanged_files_deleted: list[str] = []
 
     potential_manifest: Path = dest_dir / ".manifest.yml"
 
@@ -120,12 +132,12 @@ def CopyToOutputDir(
         with open(potential_manifest, "r") as existing_manifest_file:
             existing_manifest = yaml.load(existing_manifest_file, Loader=yaml.Loader)
 
-        # Removing prompt_text.yml from the manifest for backward compatability.
-        # Previous iterations of PythonProjectBootstrapper saved "prompt_text.yml" in the manifest file when it should not have been there
-        # (the manifest was created using the contents of the temporary directory and prompt_text.yml was there but was removed from the output directory)
-        # This results in "prompt_text.yml" being listed as a removed file since it exists in the manifest but not in the output directory
-        if "prompt_text.yml" in existing_manifest.keys():
-            del existing_manifest["prompt_text.yml"]
+        # Removing <prompt_filename> from the manifest for backward compatability.
+        # Previous iterations of PythonProjectBootstrapper saved "<prompt_filename>"" in the manifest file when it should not have been there
+        # (the manifest was created using the contents of the temporary directory and "<prompt_filename>"" was there but was removed from the output directory)
+        # This results in "<prompt_filename>" being listed as a removed file since it exists in the manifest but not in the output directory
+        if prompt_filename in existing_manifest.keys():
+            del existing_manifest[prompt_filename]
 
         unchanged_files_deleted = ConditionallyRemoveUnchangedTemplateFiles(
             new_manifest_dict=generated_manifest,
@@ -155,7 +167,7 @@ def CopyToOutputDir(
                     overwrite = input().strip().lower()
 
                     if overwrite in ["yes", "y"]:
-                        overwritten_files.add(output_dir_filepath.as_posix())
+                        overwritten_files.append(output_dir_filepath.as_posix())
                         break
 
                     # Here, we are copying the file from the output directory to the temporary directory in the case that the user answers "no"
@@ -172,9 +184,9 @@ def CopyToOutputDir(
                 current_file_hash != generated_hash
                 and current_file_hash == existing_manifest[rel_filepath]
             ):
-                modified_template_files.add(output_dir_filepath.as_posix())
+                modified_template_files.append(output_dir_filepath.as_posix())
         else:
-            added_files.add(output_dir_filepath.as_posix())
+            added_files.append(output_dir_filepath.as_posix())
             merged_manifest[rel_filepath] = generated_hash
 
     # create and save manifest
@@ -191,41 +203,58 @@ def CopyToOutputDir(
     )
     shutil.rmtree(src_dir)
 
-    deleted_files: set[str] = unchanged_files_deleted - added_files
+    deleted_files: list[str] = list(set(unchanged_files_deleted) - set(added_files))
 
-    return [deleted_files, added_files, overwritten_files, modified_template_files]
+    return CopyToOutputDirResult(
+        deleted_files=sorted(deleted_files),
+        added_files=sorted(added_files),
+        overwritten_files=sorted(overwritten_files),
+        modified_template_files=sorted(modified_template_files),
+    )
 
 
 # ----------------------------------------------------------------------
-def DisplayPrompt(output_dir: Path, modifications: list[set[str]], prompts: str) -> None:
+def DisplayModifications(modifications: CopyToOutputDirResult) -> None:
+    # Print out changes in files
+    sys.stdout.write("\n\n")
+
+    labels = ["Deleted Files", "Added Files", "Overwritten Files", "Modified Template Files"]
+    changes = [
+        modifications.deleted_files,
+        modifications.added_files,
+        modifications.overwritten_files,
+        modifications.modified_template_files,
+    ]
+
+    display_mods = Text("")
+
+    for label, mods in zip(labels, changes):
+        display_mods.append(("\n" + label + "\n"), style="bold")
+
+        for file_changed in mods:
+            display_mods.append(" - " + file_changed + "\n")
+
+    print(
+        Panel(
+            display_mods,
+            border_style="green",
+            padding=1,
+            title="Output Directory Modifications",
+            title_align="left",
+        )
+    )
+
+
+# ----------------------------------------------------------------------
+def DisplayPrompt(output_dir: Path, prompts: str) -> None:
     PathEx.EnsureDir(output_dir)
+
+    sys.stdout.write("\n\n")
 
     # Display prompts
     border_colors = itertools.cycle(
         ["yellow", "blue", "magenta", "cyan", "green"],
     )
-
-    sys.stdout.write("\n\n")
-
-    # ----------------------------------------------------------------------
-    # Print out changes in files
-    labels = ["Deleted", "Added", "Overwritten", "Modified Template"]
-
-    for label, mods in zip(labels, list(modifications)):
-        display_mods = ""
-        for file_changed in mods:
-            display_mods += file_changed + "\n"
-        print(
-            Panel(
-                display_mods.rstrip(),
-                border_style=next(border_colors),
-                padding=1,
-                title=f"{label} Files",
-                title_align="left",
-            )
-        )
-
-    sys.stdout.write("\n\n")
 
     # ----------------------------------------------------------------------
     # Print out saved prompts

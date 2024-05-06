@@ -13,12 +13,14 @@ from pathlib import Path
 
 from dbrownell_Common import PathEx
 
+prompt_filename = "prompt_text.yml"
+
 
 # ----------------------------------------------------------------------
 def SavePrompts():
     # Instructions for post generation
     #
-    # By not displaying the prompts right away, we allow the integration of a DoneManager (is this how you spell it?)
+    # By not displaying the prompts right away, we allow the integration of a DoneManager
     # so we can let the user know when the cookiecutter generation is done and before them seeing all the prompts
     #
     #
@@ -164,7 +166,7 @@ def SavePrompts():
         ),
     }
 
-    with open("prompt_text.yml", "w") as prompt_file:
+    with open(prompt_filename, "w") as prompt_file:
         yaml.dump(_prompts, prompt_file)
 
 

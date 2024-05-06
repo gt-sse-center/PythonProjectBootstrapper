@@ -92,12 +92,13 @@ def test_ConditionalRemoveTemplateFiles_no_changed_files(fs):
     existing_manifest = CreateManifest(generated_dir=output_dir_path)
     new_manifest = CreateManifest(generated_dir=new_output_path)
 
-    ConditionallyRemoveUnchangedTemplateFiles(
+    deleted_files = ConditionallyRemoveUnchangedTemplateFiles(
         new_manifest_dict=new_manifest,
         existing_manifest_dict=existing_manifest,
         output_dir=Path("output_dir"),
     )
 
+    assert deleted_files == [str(output_dir_path / "testFile3")]
     assert _dirs_equal(output_dir_path, new_output_path)
 
 
@@ -122,12 +123,13 @@ def testConditionalRemoveTemplateFiles_files_changed(fs):
 
     new_manifest = CreateManifest(generated_dir=new_output_path)
 
-    ConditionallyRemoveUnchangedTemplateFiles(
+    deleted_files = ConditionallyRemoveUnchangedTemplateFiles(
         new_manifest_dict=new_manifest,
         existing_manifest_dict=existing_manifest,
         output_dir=output_dir_path,
     )
 
+    assert deleted_files == []
     assert _dirs_equal(output_dir_path, expected_output_dir)
 
 
@@ -186,7 +188,11 @@ def test_CopyToOutputDir_no_prompt(fs):
 
     fs.create_dir(dest)
 
-    CopyToOutputDir(src_dir=src, dest_dir=dest)
+    directory_changes = CopyToOutputDir(src_dir=src, dest_dir=dest)
 
+    assert directory_changes.added_files == ["dest/test/file1", "dest/test/file2"]
+    assert directory_changes.deleted_files == []
+    assert directory_changes.overwritten_files == []
+    assert directory_changes.modified_template_files == []
     assert _dirs_equal(expected, dest)
     assert (dest / ".manifest.yml").is_file()
