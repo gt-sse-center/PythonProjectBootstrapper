@@ -30,6 +30,10 @@ prompt_filename: str = "prompt_text.yml"
 
 @dataclass(frozen=True)
 class CopyToOutputDirResult:
+    """
+    Object containing information about file modifications triggered by CopyToOutputDir() function call
+    """
+
     deleted_files: list[str] = field(default_factory=list)
     added_files: list[str] = field(default_factory=list)
     overwritten_files: list[str] = field(default_factory=list)
@@ -38,6 +42,21 @@ class CopyToOutputDirResult:
 
 # ----------------------------------------------------------------------
 def GenerateFileHash(filepath: Path, hash_fn="sha256") -> str:
+    """
+    Returns a hash value for a given file
+
+    Args:
+        filepath (Path): file to hash
+        hash_fn (str, optional): Hash algorithm to use. Choose from
+                    ['md5', 'sha1', 'sha224', 'sha256', 'sha384', 'sha512',
+                      'blake2b', 'blake2s', 'sha3_224', 'sha3_256', 'sha3_384',
+                      'sha3_512', 'shake_128', 'shake_256']
+
+            Defaults to "sha256".
+
+    Returns:
+        str: hash value for file
+    """
     PathEx.EnsureFile(filepath)
 
     hasher = hashlib.new(hash_fn)
@@ -55,6 +74,16 @@ def GenerateFileHash(filepath: Path, hash_fn="sha256") -> str:
 
 # ----------------------------------------------------------------------
 def CreateManifest(generated_dir: Path) -> dict[str, str]:
+    """
+    Create manifest dictionary for a given path. Note the values in the returned dictionary represent the hash value of the file when it was originally generated or last overwritten by a project generation.
+    These values will not necessarily reflect the hash of the current state of the file (for example if a user modifies a file but does not want to overwrite their changes)
+
+    Args:
+        generated_dir (Path): Path to create manifest of
+
+    Returns:
+        dict[str, str]: Dictionary mapping filepaths as strings to hash values representing the file contents
+    """
     manifest_dict: dict[str, str] = {}
 
     for root, _, files in os.walk(generated_dir):
@@ -74,8 +103,17 @@ def ConditionallyRemoveUnchangedTemplateFiles(
     existing_manifest_dict: dict[str, str],
     output_dir: Path,
 ) -> list[str]:
-    # Removes any template files no longer being generated as long as the file was never modified by the user.
-    # Returns a sorted list of file paths that were removed
+    """
+    Remove any template files no longer being generated as long as the file was never modified by the user.
+
+    Args:
+        new_manifest_dict (dict[str, str]): Manifest dictionary created that reflects contents on the newly generated cookiecutter project
+        existing_manifest_dict (dict[str, str]): Manifest dictionary that reflects contents of the final output directory
+        output_dir (Path): output directory path
+
+    Returns:
+        list[str]: Sorted list of file paths that were removed
+    """
 
     # files no longer in template
     removed_template_files: set[str] = set(existing_manifest_dict.keys()) - set(
@@ -106,7 +144,21 @@ def CopyToOutputDir(
     src_dir: Path,
     dest_dir: Path,
 ) -> CopyToOutputDirResult:
-    # Copies all generated files into the output directory and handles the creation/updating of the manifest file
+    """
+    Copy contents to output directory following the following rules:
+
+    1. If a file in the src_dir does not exist in the dest_dir, copy it over
+    2. If a file in the src_dir exists in the dest_dir, copy it over only if the file in the dest_dir has never been modified by the user OR after prompted, they approve overwriting their changes
+
+    Additionally, write the final manifest to "<dest_dir>/.manifest.yml". This manifest should reflect the state of the output directory after the project generation has completed
+
+    Args:
+        src_dir (Path): path to source dir
+        dest_dir (Path): path to final output directory
+
+    Returns:
+        CopyToOutputDir: data object containing a lists of files deleted, added, overwritten, and modified due to template changes
+    """
 
     PathEx.EnsureDir(src_dir)
     PathEx.EnsureDir(dest_dir)
@@ -222,7 +274,13 @@ def CopyToOutputDir(
 
 # ----------------------------------------------------------------------
 def DisplayModifications(modifications: CopyToOutputDirResult) -> None:
-    # Print out changes in files
+    """
+    Print out the changes in the output directory that were triggered by this project generation
+
+    Args:
+        modifications (CopyToOutputDirResult): Object containing information about files deleted, added, overwritten, and modified
+    """
+
     sys.stdout.write("\n\n")
 
     labels = ["Deleted Files", "Added Files", "Overwritten Files", "Modified Template Files"]
@@ -254,6 +312,13 @@ def DisplayModifications(modifications: CopyToOutputDirResult) -> None:
 
 # ----------------------------------------------------------------------
 def DisplayPrompt(output_dir: Path, prompts: dict[tuple[int, str], str]) -> None:
+    """
+    Display prompts/instructions after project generation
+
+    Args:
+        output_dir (Path): Path of final output directory
+        prompts (dict[tuple[int, str], str]): Dictionary mapping (Prompt Number, Label) -> Prompt Text
+    """
     PathEx.EnsureDir(output_dir)
 
     sys.stdout.write("\n\n")
