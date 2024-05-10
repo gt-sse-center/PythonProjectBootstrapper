@@ -190,7 +190,14 @@ def CopyToOutputDir(
             merged_manifest[rel_filepath] = generated_hash
 
     # create and save manifest
+    yaml_comments = """#####################################################################################
+# This file is used to determine whether changes have been made to any files in the project.
+# These values are saved in case the project is regenerated so we can avoid overwriting any user changes.
+# Please do not change the contents :)
+#####################################################################################\n\n"""
+
     with open(potential_manifest, "w") as manifest_file:
+        manifest_file.write(yaml_comments)
         yaml.dump(merged_manifest, manifest_file)
 
     # copy temporary directory to final output directory and remove temporary directory

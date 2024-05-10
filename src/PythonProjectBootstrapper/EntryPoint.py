@@ -31,9 +31,6 @@ from PythonProjectBootstrapper.ProjectGenerationUtils import (
     prompt_filename,
 )
 
-# from PythonProjectBootstrapper.package.hooks.post_gen_project import prompt_filename
-# prompt_filename = "prompt_text.yml"
-
 # The following imports are used in cookiecutter hooks. Import them here to
 # ensure that they are frozen when creating binaries,
 import shutil  # pylint: disable=unused-import, wrong-import-order
