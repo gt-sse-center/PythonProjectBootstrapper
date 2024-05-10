@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Annotated, Optional
 
 import typer
+import yaml
 
 from typer.core import TyperGroup  # type: ignore [import-untyped]
 
@@ -26,7 +27,12 @@ from PythonProjectBootstrapper import __version__
 from PythonProjectBootstrapper.ProjectGenerationUtils import (
     CopyToOutputDir,
     DisplayPrompt,
+    DisplayModifications,
+    prompt_filename,
 )
+
+# from PythonProjectBootstrapper.package.hooks.post_gen_project import prompt_filename
+# prompt_filename = "prompt_text.yml"
 
 # The following imports are used in cookiecutter hooks. Import them here to
 # ensure that they are frozen when creating binaries,
@@ -234,10 +240,24 @@ def _ExecuteOutputDir(
             accept_hooks=True,
         )
 
-    CopyToOutputDir(src_dir=tmp_dir, dest_dir=output_dir)
+    modifications = CopyToOutputDir(src_dir=tmp_dir, dest_dir=output_dir)
+
+    prompt_text_path = PathEx.EnsureFile(output_dir / prompt_filename)
+
+    # The approach below with reading in the prompt file regardless of whether or not we will display the prompts is not ideal but has to be
+    # done since we need to remove the prompt_text file before running DisplayPrompt(). This is because prompt_text.yml is currently stored in the output directory
+    # and the instructions being printed out during the execution of DisplayPrompt() would result in that file being check into the git repo.
+    # Alternate solutions would be to only read in the file in the 'if' block below, but, this would result in us needing the call 'unlink()' in both the 'if' block and a separate 'else' block.
+    # This issue also prevents us from using a cleaner solution such as ExitStack()
+    with open(prompt_text_path, "r") as prompt_file:
+        prompts = yaml.load(prompt_file, Loader=yaml.Loader)
+
+    prompt_text_path.unlink()
+
+    DisplayModifications(modifications=modifications)
 
     if not skip_prompts:
-        DisplayPrompt(output_dir=output_dir)
+        DisplayPrompt(output_dir=output_dir, prompts=prompts)
 
 
 if __name__ == "__main__":
