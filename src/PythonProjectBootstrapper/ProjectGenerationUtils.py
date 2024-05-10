@@ -4,6 +4,8 @@
 # |  Distributed under the MIT License.
 # |
 # ----------------------------------------------------------------------
+"""Util functions used during project generation"""
+
 from dataclasses import dataclass, field
 import hashlib
 import itertools
