@@ -10,6 +10,7 @@ from dataclasses import dataclass, field
 import hashlib
 import itertools
 import os
+from stat import S_IWUSR
 import sys
 from pathlib import Path
 
@@ -97,6 +98,26 @@ def CreateManifest(generated_dir: Path) -> dict[str, str]:
             manifest_dict[rel_path.as_posix()] = GenerateFileHash(filepath=full_path)
 
     return manifest_dict
+
+
+# ----------------------------------------------------------------------
+def _ChangeManifestWritePermissions(manifest_filepath: Path, read_only: bool) -> None:
+    """
+    Change write permissions for manifest file
+
+    Args:
+        manifest_filepath (Path): Filepath to manifest file
+        read_only (bool): If true, set to read-only. If false, allow writing to file
+    """
+    PathEx.EnsureFile(manifest_filepath)
+    status = manifest_filepath.stat()
+
+    if read_only:
+        manifest_filepath.chmod(status.st_mode & ~S_IWUSR)
+    else:
+        manifest_filepath.chmod(status.st_mode | S_IWUSR)
+
+    status = manifest_filepath.stat()
 
 
 # ----------------------------------------------------------------------
@@ -250,9 +271,14 @@ def CopyToOutputDir(
 # Please do not change the contents :)
 #####################################################################################\n\n"""
 
+    if potential_manifest.is_file():
+        _ChangeManifestWritePermissions(manifest_filepath=potential_manifest, read_only=False)
+
     with open(potential_manifest, "w") as manifest_file:
         manifest_file.write(yaml_comments)
         yaml.dump(merged_manifest, manifest_file)
+
+    _ChangeManifestWritePermissions(manifest_filepath=potential_manifest, read_only=True)
 
     # copy temporary directory to final output directory and remove temporary directory
     shutil.copytree(
