@@ -36,9 +36,9 @@ classifiers = [
 ]
 
 dependencies = [
-    "cookiecutter == 2.*",
+    "cookiecutter ~= 2.6",
     "dbrownell_Common",
-    "rich == 13.*",
+    "rich ~= 13.7",
     "typer ~= 0.9",
 ]
 
@@ -51,13 +51,13 @@ readme = "README.md"
 [project.optional-dependencies]
 dev = [
     "dbrownell_DevTools",
-    "pyfakefs == 5.*",
+    "pyfakefs ~= 5.5",
 ]
 
 package = [
-    "build == 1.*",
-    "cx_Freeze == 6.*",
-    "twine == 4.*",
+    "build ~= 1.2",
+    "cx_Freeze ~= 6.15",
+    "twine ~= 4.0",
 ]
 
 [project.urls]

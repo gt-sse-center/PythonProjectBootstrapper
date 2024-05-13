@@ -54,9 +54,9 @@ dev = [
 ]
 
 package = [
-    "build == 1.*",
-    "cx_Freeze == 6.*",
-    "twine == 4.*",
+    "build ~= 1.2",
+    "cx_Freeze ~= 6.15",
+    "twine ~= 4.0",
 ]
 
 [project.urls]
