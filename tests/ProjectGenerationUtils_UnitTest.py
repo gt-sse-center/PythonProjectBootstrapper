@@ -6,6 +6,8 @@
 # ----------------------------------------------------------------------
 import pytest
 import os
+from stat import S_IRUSR, S_IWUSR
+import sys
 from unittest.mock import patch
 
 from pathlib import Path
@@ -164,7 +166,13 @@ def test_CopyToOutputDir_overwritePrompt(fs, overwrite):
         with open(dest / path, "r") as destfile:
             assert content == destfile.read()
 
-    assert (dest / ".manifest.yml").is_file()
+    manifest_filepath = dest / ".manifest.yml"
+    assert manifest_filepath.is_file()
+
+    # check that manifest file has read-only permissions
+    status = manifest_filepath.stat()
+    assert status.st_mode & S_IWUSR == 0
+    assert status.st_mode & S_IRUSR == S_IRUSR
 
 
 # ----------------------------------------------------------------------
@@ -172,6 +180,8 @@ def test_CopyToOutputDir_no_prompt(fs):
     # Test for the following:
     #   - All created files and directories are copied into the dest
     #   - All contents of files are the same in src and dest
+    #   - Created manifest file is read-only
+
     files = [(Path("test/file1"), "abc"), (Path("test/file2"), "def")]
     emptydir_path = Path("emptydir")
 
@@ -189,10 +199,16 @@ def test_CopyToOutputDir_no_prompt(fs):
     fs.create_dir(dest)
 
     directory_changes = CopyToOutputDir(src_dir=src, dest_dir=dest)
+    manifest_filepath = dest / ".manifest.yml"
 
     assert directory_changes.added_files == ["dest/test/file1", "dest/test/file2"]
     assert directory_changes.deleted_files == []
     assert directory_changes.overwritten_files == []
     assert directory_changes.modified_template_files == []
     assert _dirs_equal(expected, dest)
-    assert (dest / ".manifest.yml").is_file()
+    assert (manifest_filepath).is_file()
+
+    # check that manifest file has read-only permissions
+    status = manifest_filepath.stat()
+    assert status.st_mode & S_IWUSR == 0
+    assert status.st_mode & S_IRUSR == S_IRUSR
