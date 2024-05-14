@@ -164,3 +164,6 @@ python_files = [
 # ----------------------------------------------------------------------
 [tool.setuptools.dynamic]
 version = { attr = "{{ cookiecutter.pypi_project_name | escape_double_quotes }}.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]

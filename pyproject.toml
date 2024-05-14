@@ -167,5 +167,8 @@ python_files = [
 [tool.setuptools.dynamic]
 version = { attr = "PythonProjectBootstrapper.__version__" }
 
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [tool.setuptools.package-data]
 "PythonProjectBootstrapper.package" = ["**"]
