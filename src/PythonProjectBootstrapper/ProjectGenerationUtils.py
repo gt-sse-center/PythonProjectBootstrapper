@@ -27,7 +27,9 @@ from PythonProjectBootstrapper import __version__
 import shutil  # pylint: disable=unused-import, wrong-import-order
 import textwrap  # pylint: disable=unused-import, wrong-import-order
 
-# TODO: find a way to verify this is the filename the post-gen-hook writes to
+# This filename should be the same as the filename defined in package/hooks/post_gen_project.py
+# Ideally we would be able to assert that these two variables have the same filename, but we encounter errors when importing
+# the variable due to how cookiecutter changes the working directory for the post-gen hook
 prompt_filename: str = "prompt_text.yml"
 
 

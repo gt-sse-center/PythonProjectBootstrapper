@@ -13,6 +13,9 @@ from pathlib import Path
 
 from dbrownell_Common import PathEx
 
+# This filename should be the same as the filename defined in ../../ProjectGenerationUtils.py
+# Ideally we would be able to assert that these two variables have the same filename, but we encounter errors when importing
+# the variable due to how cookiecutter changes the working directory for the post-gen hook
 prompt_filename = "prompt_text.yml"
 
 
