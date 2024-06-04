@@ -267,11 +267,16 @@ def CopyToOutputDir(
             merged_manifest[rel_filepath] = generated_hash
 
     # create and save manifest
-    yaml_comments = """#####################################################################################
-# This file is used to determine whether changes have been made to any files in the project.
-# These values are saved in case the project is regenerated so we can avoid overwriting any user changes.
-# Please do not change the contents :)
-#####################################################################################\n\n"""
+    yaml_comments = textwrap.dedent(
+        """\
+        #############################################################################################################
+        # This file is used by PythonProjectBootstrapper (https://github.com/gt-sse-center/PythonProjectBootstrapper)
+        # to determine whether changes have been made to any files in the project. These values are saved in case the
+        # project is regenerated so we can avoid overwriting any user changes. Please do not change the contents :)
+        #############################################################################################################
+
+        """,
+    )
 
     if potential_manifest.is_file():
         _ChangeManifestWritePermissions(manifest_filepath=potential_manifest, read_only=False)

@@ -12,7 +12,17 @@
 
 {{ cookiecutter.project_description }}
 
-### Overview
+<!-- BEGIN: Exclude Package -->
+## Contents
+- [Overview](#overview)
+- [Installation](#installation)
+- [Contributing](#contributing)
+- [Local Development](#local-development)
+- [Vulnerability Reporting](#vulnerability-reporting-security-issues)
+- [License](#license)
+<!-- END: Exclude Package -->
+
+## Overview
 
 TODO: Complete this section
 
@@ -20,24 +30,39 @@ TODO: Complete this section
 
 TODO: Complete this section
 
-## Installation via Executable
+<!-- BEGIN: Exclude Package -->
+## Installation
+
+{{ cookiecutter.github_project_name }} can be installed via one of these methods:
+
+- [Installation via Executable](#installation-via-executable)
+- [Installation via pip](#installation-via-pip)
+
+### Installation via Executable
 
 Download an executable for Linux, MacOS, or Windows to use the functionality provided by this repository without a dependency on [Python](https://www.python.org).
 
 1. Download the archive for the latest release [here]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/releases/latest); the files will begin with `exe.` and contain the name of your operating system.
 2. Decompress the archive
 
-## Installation via pip
+### Installation via pip
 
 Install the {{ cookiecutter.pypi_project_name }} package via [pip](https://pip.pypa.io/en/stable/) (Package Installer for Python) to use it with your python code.
 
 `pip install {{ cookiecutter.pypi_project_name }}`
 
-<!-- BEGIN: Exclude Package -->
+## Contributing
+See [CONTRIBUTING.md]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/CONTRIBUTING.md) for information on contributing to {{ cookiecutter.github_project_name }}.
+
 ## Local Development
 
-Visit [DEVELOPMENT.md]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/DEVELOPMENT.md) for information on developing or testing {{ cookiecutter.github_project_name }} on your local Linux, MacOS, or Windows machine.
+See [DEVELOPMENT.md]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/DEVELOPMENT.md) for information on developing or testing {{ cookiecutter.github_project_name }} on your local Linux, MacOS, or Windows machine.
 <!-- END: Exclude Package -->
+
+## Vulnerability Reporting (Security Issues)
+Please privately report vulnerabilities you find so we can fix them!
+
+See [SECURITY.md]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/SECURITY.md) for information on how to privately report vulnerabilities.
 
 ## License
 
