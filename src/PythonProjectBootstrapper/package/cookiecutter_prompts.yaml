@@ -88,6 +88,13 @@ gist_id: |-
 gist_username: |-
   Please enter the username associated with your gist_id. In most cases, this will be the same as your GitHub username.
 
+sign_binaries: |-
+  Would you like the GitHub Action workflows to sign binaries produced by the project?
+
+  A signed binary can be validated against its signature to ensure that changes have not been made
+  to it after it was created. This is especially useful when distributing software to others and is
+  highly recommended.
+
 create_docker_image: |-
   Would you like the GitHub Action workflows to create docker images of the development environment?
   These images can be used to produce exact results across different commits made to the repository

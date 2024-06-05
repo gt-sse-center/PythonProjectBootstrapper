@@ -45,6 +45,24 @@ Download an executable for Linux, MacOS, or Windows to use the functionality pro
 1. Download the archive for the latest release [here]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/releases/latest); the files will begin with `exe.` and contain the name of your operating system.
 2. Decompress the archive
 
+{% if cookiecutter.sign_binaries %}
+#### Verifying Signed Executables
+
+Executables are signed and validated using [Minisign](https://jedisct1.github.io/minisign/).
+
+The public key for executables in this repository is `<TODO: Update with public key>`.
+
+To verify that the executable is valid, download the corresponding `.minisig` file [here]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/releases/latest) and run the command corresponding to your operating system, replacing `<filename>` with the name of your file.
+
+| Operating System | Command |
+| --- | --- |
+| Linux / MacOS | `docker run -i --rm -v "$(pwd):/host" jedisct1/minisign -V -P <TODO: Update with public key> -m /host/<filename>` |
+| Windows | `docker run -i --rm -v "%CD%:/host" jedisct1/minisign -V -P <TODO: Update with public key> -m /host/<filename>` |
+
+Instructions for installing [docker](https://docker.com) are available at https://docs.docker.com/engine/install/.
+
+{% endif %}
+
 ### Installation via pip
 
 Install the {{ cookiecutter.pypi_project_name }} package via [pip](https://pip.pypa.io/en/stable/) (Package Installer for Python) to use it with your python code.

@@ -47,7 +47,7 @@ tests_dir = PathEx.EnsureDir(this_dir / "tests")
 Black = RepoBuildTools.BlackFuncFactory(
     this_dir,
     app,
-    '--force-exclude "{{ cookiecutter.__empty_dir }}"',
+    '--force-exclude "{{ cookiecutter.__empty_dir }}|src/PythonProjectBootstrapper/package/hooks"',
 )
 
 Pylint = RepoBuildTools.PylintFuncFactory(

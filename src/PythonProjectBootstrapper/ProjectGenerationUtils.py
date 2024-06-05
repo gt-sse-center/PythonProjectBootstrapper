@@ -346,7 +346,7 @@ def DisplayModifications(modifications: CopyToOutputDirResult) -> None:
 
 
 # ----------------------------------------------------------------------
-def DisplayPrompt(output_dir: Path, prompts: dict[tuple[int, str], str]) -> None:
+def DisplayPrompt(output_dir: Path, prompts: list[tuple[str, str]]) -> None:
     """
     Display prompts/instructions after project generation
 
@@ -365,13 +365,13 @@ def DisplayPrompt(output_dir: Path, prompts: dict[tuple[int, str], str]) -> None
 
     # ----------------------------------------------------------------------
     # Print out saved prompts
-    for (prompt_index, title), prompt in sorted(prompts.items()):
+    for prompt_index, (title, prompt) in enumerate(prompts):
         print(
             Panel(
                 prompt.rstrip(),
                 border_style=next(border_colors),
                 padding=1,
-                title=f"[{prompt_index}/{len(prompts)}] {title}",
+                title=f"[{prompt_index + 1}/{len(prompts)}] {title}",
                 title_align="left",
             ),
         )
