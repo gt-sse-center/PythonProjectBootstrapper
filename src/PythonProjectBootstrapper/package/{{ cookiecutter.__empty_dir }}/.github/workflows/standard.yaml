@@ -14,11 +14,13 @@ on:
     - cron: '0 0 * * *' # Once a day at 12am UTC
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   # ----------------------------------------------------------------------
   action_contexts:
     name: "Display GitHub Action Contexts"
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_display_action_contexts.yaml@CI-v0.18.0
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_display_action_contexts.yaml@CI-v0.19.0
 
   # ----------------------------------------------------------------------
   validate:
@@ -40,7 +42,10 @@ jobs:
 
     name: Validate
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python.yaml@CI-v0.18.0
+    permissions:
+      contents: read
+
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python.yaml@CI-v0.19.0
     with:
       operating_system: {% raw %}${{ matrix.os }}{% endraw %}
       python_version: {% raw %}${{ matrix.python_version }}{% endraw %}
@@ -51,7 +56,10 @@ jobs:
 
     name: Postprocess Coverage Info
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_package_python_coverage.yaml@CI-v0.18.0
+    permissions:
+      contents: read
+
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_package_python_coverage.yaml@CI-v0.19.0
     with:
       gist_id: {{ cookiecutter.gist_id }}
       gist_filename: {{ cookiecutter.github_project_name }}_coverage.json
@@ -80,7 +88,10 @@ jobs:
 
     name: Create Package
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_create_python_package.yaml@CI-v0.18.0
+    permissions:
+      contents: read
+
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_create_python_package.yaml@CI-v0.19.0
     with:
       operating_system: {% raw %}${{ matrix.os }}{% endraw %}
       python_version: {% raw %}${{ matrix.python_version }}{% endraw %}
@@ -107,7 +118,10 @@ jobs:
 
     name: Validate Package
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python_package.yaml@CI-v0.18.0
+    permissions:
+      contents: read
+
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python_package.yaml@CI-v0.19.0
     with:
       operating_system: {% raw %}${{ matrix.os }}{% endraw %}
       python_version: {% raw %}${{ matrix.python_version }}{% endraw %}
@@ -131,7 +145,10 @@ jobs:
 
     name: Create Binary
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_create_python_binary.yaml@CI-v0.18.0
+    permissions:
+      contents: read
+
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_create_python_binary.yaml@CI-v0.19.0
     with:
       operating_system: {% raw %}${{ matrix.os }}{% endraw %}
       python_version: {% raw %}${{ matrix.python_version }}{% endraw %}
@@ -154,7 +171,10 @@ jobs:
 
     name: Validate Binary
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python_binary.yaml@CI-v0.18.0
+    permissions:
+      contents: read
+
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_validate_python_binary.yaml@CI-v0.19.0
     with:
       operating_system: {% raw %}${{ matrix.os }}{% endraw %}
       python_version: {% raw %}${{ matrix.python_version }}{% endraw %}
@@ -178,7 +198,11 @@ jobs:
 
     name: Create Docker Image
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_create_docker_image.yaml@CI-v0.18.0
+    permissions:
+      contents: read
+      packages: write
+
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_create_docker_image.yaml@CI-v0.19.0
     with:
       operating_system: ubuntu-latest
       python_version: {% raw %}${{ matrix.python_version }}{% endraw %}
@@ -200,7 +224,10 @@ jobs:
 
     name: Publish
 
-    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_publish_python.yaml@CI-v0.18.0
+    permissions:
+      contents: write
+
+    uses: davidbrownell/dbrownell_DevTools/.github/workflows/callable_publish_python.yaml@CI-v0.19.0
     with:
       release_sources_configuration_filename: .github/release_sources.yaml
     secrets:
