@@ -8,6 +8,9 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/{{ cookiecutter.pypi_project_name }}?color=dark-green)](https://pypi.org/project/{{ cookiecutter.pypi_project_name | pypi_string }}/)
 [![PyPI - Version](https://img.shields.io/pypi/v/{{ cookiecutter.pypi_project_name }}?color=dark-green)](https://pypi.org/project/{{ cookiecutter.pypi_project_name | pypi_string }}/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/{{ cookiecutter.pypi_project_name }})](https://pypistats.org/packages/{{ cookiecutter.pypi_project_name | pypi_string }})
+{% if cookiecutter.openssf_best_practices_badge_id != 'none' -%}
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/{{ cookiecutter.openssf_best_practices_badge_id }}/badge)](https://www.bestpractices.dev/projects/{{ cookiecutter.openssf_best_practices_badge_id }})
+{% endif %}
 <!-- END: Exclude Package -->
 
 {{ cookiecutter.project_description }}

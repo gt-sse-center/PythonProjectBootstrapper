@@ -363,7 +363,6 @@ def DisplayPrompt(output_dir: Path, prompts: list[tuple[str, str]]) -> None:
         ["yellow", "blue", "magenta", "cyan", "green"],
     )
 
-    # ----------------------------------------------------------------------
     # Print out saved prompts
     for prompt_index, (title, prompt) in enumerate(prompts):
         print(

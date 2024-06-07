@@ -134,7 +134,7 @@ def SavePrompts() -> None:
 
     prompts["Save the Minisign Public Key"] = textwrap.dedent(
         f"""\
-        In this step, we will updated README.md with the Minisign public key.
+        In this step, we will update README.md with the Minisign public key.
 
         1. Open '{Path.cwd() / "key.pub"}' in a text editor.
         2. Copy the contents of the file.
@@ -220,6 +220,121 @@ def SavePrompts() -> None:
         1. Edit README.md
         2. Replace the "TODO" comment in the "Overview" section.
         3. Replace the "TODO" comment in the "How to use {{ cookiecutter.github_project_name }}" section.
+        """,
+    )
+
+{% if cookiecutter.openssf_best_practices_badge_id != "none" %}
+    prompts["Create the OpenSSF Best Practices Badge"] = textwrap.dedent(
+        """\
+        In this step, we will populate information on www.bestpractices.dev that is used to display
+        the badge on our README.md file.
+
+        1. Visit https://www.bestpractices.dev/
+        2. Click the "Get Your Badge Now!" button.
+        3. In the lower form, provide these values:
+                What is the URL for the project home page?
+                    {{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}
+                What is the URL for the version control repository?
+                    {{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}
+        4. Click the "Submit URL" button.
+        5. Search for these options and set them to the following values:
+
+                Basics
+                    \[interact]: Met
+                    \[contribution_requirements]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/CONTRIBUTING.md)
+                    \[english]: Met
+
+                Change Control
+                    \[repo_interim]: Met
+                    \[version_unique]: Met
+                    \[version_semver]: Met
+                    \[version_tags]: Met
+                    \[release_notes]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/releases/latest)
+
+                Reporting
+                    \[report_process]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/CONTRIBUTING.md)
+                    \[report_tracker]: Met
+                    \[report_responses]: Met
+                    \[report_archive]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/issues)
+                    \[vulnerability_report_process]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/SECURITY.md)
+                    \[vulnerability_report_private]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/SECURITY.md)
+
+                Quality
+                    \[build]: Met
+                    \[build_common_tools]: Met
+                    \[build_floss_tools]: Met
+                    \[test]: Met
+                    \[test_invocation]: Met
+                    \[test_most]: Met
+                    \[test_continuous_integration]: Met
+                    \[test_policy]: Met
+                    \[tests_are_added]: Met
+                    \[tests_documented_added]: Met
+                    \[warnings]: Met
+                    \[warnings_fixed]: Met
+                    \[warnings_strict]: Met
+
+                Analysis
+                    \[static_analysis]: Met (pylint, CodeQL)
+                    \[static_analysis_common_vulnerabilities]: Met
+                    \[static_analysis_often]: Met
+                    \[dynamic_analysis]: Met
+                    \[dynamic_analysis_unsafe]: N/A
+
+           These changes will result in a score of 63% (at the time this documentation was written). The remaining fields rely on documentation specific to your project
+           or developer behavior based on your interaction with the package (fix critical vulnerabilities within 60 days, etc.).
+
+        6. Click on the "Submit (and exit)" button.
+        7. Copy the unique id of your project from the bestpractices.dev URL for use in the next step.
+
+            https://www.bestpractices.dev/en/projects/12345
+                                                      ^^^^^
+                                                      This is the unique id of your project
+        """,
+    )
+
+    prompts["Save the OpenSSF Best Practices Badge ID"] = textwrap.dedent(
+        """\
+        In this step, we will update README.md with the OpenSSF Best Practices Badge ID.
+
+        1. Edit 'README.md'.
+        2. Search for '__openssf_badge_id__' and replace all instances with the badge id copied in the previous step.
+        3. Save 'README.md'.
+        """,
+    )
+
+    prompts["Commit and Push the Repository"] = textwrap.dedent(
+        """\
+        1. Run 'git add --all'
+        2. Run 'git commit -m "🎉 Updated README.md with OpenSSF Best Practices Badge ID"'
+        3. Run 'git push'
+        """,
+    )
+
+{% endif %}
+
+    prompts["[OPTIONAL] Save this Configuration"] = textwrap.dedent(
+        """\
+        If you would like to regenerate this project in the future with the same configuration.
+
+        1. Edit a file named 'configuration.yaml' with the contents:
+
+               default_context:
+                 name: {{ cookiecutter.name }}
+                 email: {{ cookiecutter.email }}
+                 project_description: {{ cookiecutter.project_description }}
+                 license: {{ cookiecutter.license }}
+                 github_url: {{ cookiecutter.github_url }}
+                 github_username: {{ cookiecutter.github_username }}
+                 github_project_name: {{ cookiecutter.github_project_name }}
+                 pypi_project_name: {{ cookiecutter.pypi_project_name }}
+                 gist_id: {{ cookiecutter.gist_id }}
+                 gist_username: {{ cookiecutter.gist_username }}
+                 sign_binaries: {{ cookiecutter.sign_binaries }}
+                 openssf_best_practices_badge_id: {{ cookiecutter.openssf_best_practices_badge_id }}
+                 create_docker_image: {{ cookiecutter.create_docker_image }}
+
+        2. Run 'PythonProjectBootstrapper package <output_dir> --configuration configuration.yaml` to regenerate the project.
         """,
     )
 
