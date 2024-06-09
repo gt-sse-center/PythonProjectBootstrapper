@@ -23,8 +23,7 @@ project_description: |-
       - Metadata for the generated python binary
 
 license: |-
-  Please enter the license you would like to use for your project. https://choosealicense.com/ is a
-  good resource that helps you choose the best license for your project.
+  Please enter the license you would like to use for your project. https://choosealicense.com/ is a good resource that helps you choose the best license for your project.
 
   This value will be used in:
       - Population of the License.txt file (or equivalent)
@@ -34,42 +33,33 @@ license: |-
       - Metadata for the generated docker image (if applicable)
 
 github_url: |-
-  Please enter the GitHub URL. You should use the URL to your GitHub repository as a guide when
-  specifying this value.
+  Please enter the GitHub URL. You should use the URL to your GitHub repository as a guide when specifying this value.
 
       https://github.com/username/projectname
       ^^^^^^^^^^^^^^^^^^
       This is the GitHub URL
 
 github_username: |-
-  Please enter your GitHub username. You should use the URL to your GitHub repository as a guide when
-  specifying this value.
+  Please enter your GitHub username. You should use the URL to your GitHub repository as a guide when specifying this value.
 
       https://github.com/username/projectname
                          ^^^^^^^^
                          This is the GitHub username
 
 github_project_name: |-
-  Please enter your GitHub project name. You should use the URL to your GitHub repository as a guide
-  when specifying this value.
+  Please enter your GitHub project name. You should use the URL to your GitHub repository as a guide when specifying this value.
 
       https://github.com/username/projectname
                                   ^^^^^^^^^^^
                                   This is the GitHub project name
 
 pypi_project_name: |-
-  Please enter the name of your project as it will appear on PyPI (https://pypi.org). This
-  name cannot be associated with any other project on PyPI.
+  Please enter the name of your project as it will appear on PyPI (https://pypi.org). This name cannot be associated with any other project on PyPI.
 
 gist_id: |-
   Please enter the GitHub gist id for use with this project.
 
-  GitHub defines a gist as "a simple way to share snippets and pastes with others." The generated
-  python project will use a gist to store information dynamically generated during the build (for
-  example code coverage information) that can be retrieved at a later time (for example, to display
-  a code coverage badge in the project's README.md file).
-
-  To create a gist:
+  GitHub defines a gist as "a simple way to share snippets and pastes with others." The generated python project will use a gist to store information dynamically generated during the build (for example code coverage information) that can be retrieved at a later time (for example, to display a code coverage badge in the project's README.md file). To create a gist:
       1. Go to https://gist.github.com/
       2. Enter the following values in their respective fields:
 
@@ -91,11 +81,14 @@ gist_username: |-
 sign_binaries: |-
   Would you like the GitHub Action workflows to sign binaries produced by the project?
 
-  A signed binary can be validated against its signature to ensure that changes have not been made
-  to it after it was created. This is especially useful when distributing software to others and is
-  highly recommended.
+  A signed binary can be validated against its signature to ensure that changes have not been made to it after it was created. This is especially useful when distributing software to others and is highly recommended.
+
+openssf_best_practices_badge_id: |-
+  Enter the OpenSSF Best Practices Badge ID to display in your README.md file. Keep this default value if you do not have an OpenSSF Best Practices Badge ID but would like to create one (this is highly recommended). Enter the value 'none' if you do not want to display this badge in your README.md file.
+
+  The Open Source Security Foundation (OpenSSF) Best Practices badge is a way for Free/Libre and Open Source Software (FLOSS) projects to show that they follow best practices. Additional information is available at https://www.bestpractices.dev/.
+
+  This script will automatically generate scaffolding to achieve a 63% score. Completing your project's documentation and following development best practices will raise your score to 100%. Participation in the OpenSSF Best Practices Badge program is highly recommended.
 
 create_docker_image: |-
-  Would you like the GitHub Action workflows to create docker images of the development environment?
-  These images can be used to produce exact results across different commits made to the repository
-  over time (which is especially valuable when writing scientific software).
+  Would you like the GitHub Action workflows to create docker images of the development environment? These images can be used to produce exact results across different commits made to the repository over time (which is especially valuable when writing scientific software).

@@ -30,8 +30,10 @@ Tool that helps in the creation of python projects.
 - Python [wheel](https://pythonwheels.com/) creation
 - Wheel deployment to [PyPi](https://pypi.org)
 - Executable generation via [cx_Freeze](https://marcelotduarte.github.io/cx_Freeze/)
-- Optional generation of development environment [docker](https://www.docker.com/) [images](https://aws.amazon.com/compare/the-difference-between-docker-images-and-containers/) in support of [FAIR principles](https://www.go-fair.org/fair-principles/)
 - Full [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration), [Continuous Delivery](https://en.wikipedia.org/wiki/Continuous_delivery), and [Continuous Deployment](https://en.wikipedia.org/wiki/Continuous_deployment) (via [GitHub Actions](https://github.com/features/actions)) for everything listed above
+- [Optional] Build artifact signing via [Minisign](https://jedisct1.github.io/minisign/)
+- [Optional] Participation in the [Open Source Security Foundation (OpenSSF) Best Practices Badge Program](https://www.bestpractices.dev/)
+- [Optional] Generation of development environment [docker](https://www.docker.com/) [images](https://aws.amazon.com/compare/the-difference-between-docker-images-and-containers/) in support of [FAIR principles](https://www.go-fair.org/fair-principles/)
 
 #### Project Content Customization
 
@@ -161,6 +163,8 @@ There are other tools available that offer similar functionality, each emphasizi
 | [cookiecutter-pylibrary](https://github.com/ionelmc/cookiecutter-pylibrary) | Enhanced cookiecutter template for Python libraries. |
 
 ### Templating Systems
+
+PythonProjectBootstrapper uses cookiecutter as its underlying templating engine, but others are available within python. Some are listed here if you want to use them directly.
 
 | Tool | Description |
 | --- | --- |

@@ -96,7 +96,7 @@ _project_argument = typer.Argument(
 )
 
 _configuration_filename_option = typer.Option(
-    "--configuration-filename",
+    "--configuration",
     dir_okay=False,
     exists=True,
     resolve_path=True,
