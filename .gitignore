@@ -12,3 +12,6 @@ Deactivate*.sh
 build/**
 dist/**
 src/PythonProjectBootstrapper.egg-info/**
+
+key.pri
+key.pub

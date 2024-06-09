@@ -78,10 +78,19 @@ gist_id: |-
 gist_username: |-
   Please enter the username associated with your gist_id. In most cases, this will be the same as your GitHub username.
 
-sign_binaries: |-
-  Would you like the GitHub Action workflows to sign binaries produced by the project?
+minisign_public_key: |-
+  Please enter your Minisign public key for use with this project or "none" if you do not want to sign binaries (this is not recommended).
 
-  A signed binary can be validated against its signature to ensure that changes have not been made to it after it was created. This is especially useful when distributing software to others and is highly recommended.
+  Minisign is a dead simple tool to sign files and verify signatures. It is a secure tool that uses the Ed25519 public-key signature system. More information is available at https://jedisct1.github.io/minisign/.
+
+  Note that these steps rely on docker (docker.com), so please make sure that docker is installed and working properly on your machine.
+  Additional information is available at https://docs.docker.com/engine/install/.
+
+  To create a Minisign key pair for use with this project:
+      1. Run 'docker run -i --rm -v ".:/host" jedisct1/minisign -G -p /host/key.pub -s /host/key.pri -W'
+      2. Ensure that the file 'key.pri' exists (this file will be used later).
+      3. Open the file 'key.pub' and copy the key from the file; the key will be the last line of the file.
+      4. Paste the copied key here.
 
 openssf_best_practices_badge_id: |-
   Enter the OpenSSF Best Practices Badge ID to display in your README.md file. Keep this default value if you do not have an OpenSSF Best Practices Badge ID but would like to create one (this is highly recommended). Enter the value 'none' if you do not want to display this badge in your README.md file.

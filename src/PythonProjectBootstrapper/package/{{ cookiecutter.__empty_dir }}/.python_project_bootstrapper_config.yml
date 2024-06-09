@@ -17,6 +17,6 @@ default_context:
   pypi_project_name: {{ cookiecutter.pypi_project_name }}
   gist_id: {{ cookiecutter.gist_id }}
   gist_username: {{ cookiecutter.gist_username }}
-  sign_binaries: {{ cookiecutter.sign_binaries }}
+  minisign_public_key: {{ cookiecutter.minisign_public_key }}
   openssf_best_practices_badge_id: {{ cookiecutter.openssf_best_practices_badge_id }}
   create_docker_image: {{ cookiecutter.create_docker_image }}
