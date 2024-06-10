@@ -8,7 +8,7 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/{{ cookiecutter.pypi_project_name }}?color=dark-green)](https://pypi.org/project/{{ cookiecutter.pypi_project_name | pypi_string }}/)
 [![PyPI - Version](https://img.shields.io/pypi/v/{{ cookiecutter.pypi_project_name }}?color=dark-green)](https://pypi.org/project/{{ cookiecutter.pypi_project_name | pypi_string }}/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/{{ cookiecutter.pypi_project_name }})](https://pypistats.org/packages/{{ cookiecutter.pypi_project_name | pypi_string }})
-{% if cookiecutter.openssf_best_practices_badge_id != 'none' -%}
+{% if cookiecutter.openssf_best_practices_badge_id.strip().lower() != 'none' -%}
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/{{ cookiecutter.openssf_best_practices_badge_id }}/badge)](https://www.bestpractices.dev/projects/{{ cookiecutter.openssf_best_practices_badge_id }})
 {% endif %}
 <!-- END: Exclude Package -->
@@ -48,7 +48,7 @@ Download an executable for Linux, MacOS, or Windows to use the functionality pro
 1. Download the archive for the latest release [here]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/releases/latest); the files will begin with `exe.` and contain the name of your operating system.
 2. Decompress the archive
 
-{% if cookiecutter.minisign_public_key != 'none' %}
+{% if cookiecutter.minisign_public_key.strip().lower() != 'none' %}
 #### Verifying Signed Executables
 
 Executables are signed and validated using [Minisign](https://jedisct1.github.io/minisign/).

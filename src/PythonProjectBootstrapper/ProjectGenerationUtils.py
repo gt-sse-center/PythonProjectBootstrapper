@@ -190,8 +190,13 @@ def CopyToOutputDir(
 
     prompt_file = src_dir / prompt_filename
     if prompt_file.is_file():
+        dest_filename = dest_dir / prompt_filename
+
+        if dest_filename.is_file():
+            dest_filename.unlink()
+
         shutil.move(prompt_file, dest_dir)
-        PathEx.EnsureFile(dest_dir / prompt_filename)
+        PathEx.EnsureFile(dest_filename)
 
     # existing_manifest will be populated/updated as necessary and saved
     generated_manifest: dict[str, str] = CreateManifest(src_dir)
@@ -209,7 +214,7 @@ def CopyToOutputDir(
         with open(potential_manifest, "r") as existing_manifest_file:
             existing_manifest = yaml.load(existing_manifest_file, Loader=yaml.Loader)
 
-        # Removing <prompt_filename> from the manifest for backward compatability.
+        # Removing <prompt_filename> from the manifest for backward compatibility.
         # Previous iterations of PythonProjectBootstrapper saved "<prompt_filename>"" in the manifest file when it should not have been there
         # (the manifest was created using the contents of the temporary directory and "<prompt_filename>"" was there but was removed from the output directory)
         # This results in "<prompt_filename>" being listed as a removed file since it exists in the manifest but not in the output directory
@@ -262,9 +267,31 @@ def CopyToOutputDir(
                 and current_file_hash == existing_manifest[rel_filepath]
             ):
                 modified_template_files.append(output_dir_filepath.as_posix())
-        else:
-            added_files.append(output_dir_filepath.as_posix())
+        elif potential_manifest.is_file():
+            # If here, the file no longer exists. We still want the file to exist in the manifest
+            # (so that future generations are still aware of it), but do not want it to be created
+            # again.
             merged_manifest[rel_filepath] = generated_hash
+
+            while True:
+                sys.stdout.write(
+                    f"\nWould you like to recreate {str(output_dir_filepath)}? [yes/no]: "
+                )
+                recreate = input().strip().lower()
+
+                if recreate in ["yes", "y"]:
+                    added_files.append(output_dir_filepath.as_posix())
+                    break
+
+                if recreate in ["no", "n"]:
+                    generated_filename = PathEx.EnsureFile(src_dir / rel_filepath)
+                    generated_filename.unlink()
+
+                    break
+        else:
+            # If here, we are looking at a first time generation and don't need to prompt
+            merged_manifest[rel_filepath] = generated_hash
+            added_files.append(output_dir_filepath.as_posix())
 
     # create and save manifest
     yaml_comments = textwrap.dedent(

@@ -12,3 +12,6 @@ Deactivate*.sh
 build/**
 dist/**
 src/{{ cookiecutter.pypi_project_name }}.egg-info/**
+
+key.pri
+key.pub

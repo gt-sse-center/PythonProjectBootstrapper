@@ -101,7 +101,7 @@ def SavePrompts() -> None:
         """,
     )
 
-{% if cookiecutter.minisign_public_key != 'none' %}
+{% if cookiecutter.minisign_public_key.strip().lower() != 'none' %}
     prompts["Save the Minisign Private Key"] = textwrap.dedent(
         f"""\
         In this step, we will save the Minisign private key as a GitHub Action Secret.
@@ -185,6 +185,23 @@ def SavePrompts() -> None:
         3. Click "Update secret"
         """,
     )
+
+{% if cookiecutter.minisign_public_key.strip().lower() != 'none' %}
+    prompts["Validate Minisign Signature"] = textwrap.dedent(
+        """\
+        In this step, we validate that a binary was correctly signed.
+
+        1. Download a binary and its corresponding signature file from {{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/releases/latest.
+        2. In the download directory, run;
+
+                docker run -i --rm -v ".:/host" jedisct1/minisign -V -P {{ cookiecutter.minisign_public_key }} -m /host/<binary_name>
+
+           replacing '<binary_name>' with the name of the file downloaded in the previous step.
+        3. Verify that 'Signature and comment signature verified' is displayed in the output.
+        """,
+    )
+
+{% endif %}
 
 {% if cookiecutter.openssf_best_practices_badge_id != "none" %}
     prompts["Update the OpenSSF Best Practices Badge [Basics]"] = textwrap.dedent(
