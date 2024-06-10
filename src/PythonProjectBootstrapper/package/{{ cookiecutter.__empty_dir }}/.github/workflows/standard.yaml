@@ -232,6 +232,6 @@ jobs:
       release_sources_configuration_filename: .github/release_sources.yaml
     secrets:
       PYPI_TOKEN: {% raw %}${{ secrets.PYPI_TOKEN }}{% endraw %}
-{% if cookiecutter.sign_binaries %}
+{% if cookiecutter.minisign_public_key != 'none' %}
       MINISIGN_PRIVATE_KEY: {% raw %}${{ secrets.MINISIGN_PRIVATE_KEY }}{% endraw %}
 {% endif %}

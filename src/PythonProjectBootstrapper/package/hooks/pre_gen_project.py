@@ -19,6 +19,8 @@ if "{{ cookiecutter.github_project_name | escape_double_quotes }}".startswith("<
     errors.append('''github_project_name ("{{ cookiecutter.github_project_name }}")''')
 if "{{ cookiecutter.gist_id | escape_double_quotes }}".startswith("<") and "{{ cookiecutter.gist_id | escape_double_quotes }}".endswith(">"):
     errors.append('''gist_id ("{{ cookiecutter.gist_id }}")''')
+if "{{ cookiecutter.minisign_public_key | escape_double_quotes }}".startswith("<") and "{{ cookiecutter.minisign_public_key | escape_double_quotes }}".endswith(">"):
+    errors.append('''minisign_public_key ("{{ cookiecutter.minisign_public_key }}")''')
 # fmt: on
 
 if errors:

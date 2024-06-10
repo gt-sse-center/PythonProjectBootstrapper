@@ -48,19 +48,16 @@ Download an executable for Linux, MacOS, or Windows to use the functionality pro
 1. Download the archive for the latest release [here]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/releases/latest); the files will begin with `exe.` and contain the name of your operating system.
 2. Decompress the archive
 
-{% if cookiecutter.sign_binaries %}
+{% if cookiecutter.minisign_public_key != 'none' %}
 #### Verifying Signed Executables
 
 Executables are signed and validated using [Minisign](https://jedisct1.github.io/minisign/).
 
-The public key for executables in this repository is `<TODO: Update with public key>`.
+The public key for executables in this repository is `{{ cookiecutter.minisign_public_key }}`.
 
-To verify that the executable is valid, download the corresponding `.minisig` file [here]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/releases/latest) and run the command corresponding to your operating system, replacing `<filename>` with the name of your file.
+To verify that the executable is valid, download the corresponding `.minisig` file [here]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/releases/latest) and run this command, replacing `<filename>` with the name of your file.
 
-| Operating System | Command |
-| --- | --- |
-| Linux / MacOS | `docker run -i --rm -v "$(pwd):/host" jedisct1/minisign -V -P <TODO: Update with public key> -m /host/<filename>` |
-| Windows | `docker run -i --rm -v "%CD%:/host" jedisct1/minisign -V -P <TODO: Update with public key> -m /host/<filename>` |
+`docker run -i --rm -v .:/host jedisct1/minisign -V -P {{ cookiecutter.minisign_public_key }} -m /host/<filename>`
 
 Instructions for installing [docker](https://docker.com) are available at https://docs.docker.com/engine/install/.
 
