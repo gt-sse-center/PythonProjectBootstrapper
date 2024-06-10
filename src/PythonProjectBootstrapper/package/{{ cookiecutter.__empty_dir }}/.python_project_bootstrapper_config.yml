@@ -1,0 +1,22 @@
+#############################################################################################################
+# This file is used by PythonProjectBootstrapper (https://github.com/gt-sse-center/PythonProjectBootstrapper)
+# to rerun generation on this python package. To use this file, run the following command from within this
+# working directory:
+#
+#   PythonProjectBootstrapper package . --config .python_project_bootstrapper_config.yml
+#
+#############################################################################################################
+default_context:
+  name: {{ cookiecutter.name }}
+  email: {{ cookiecutter.email }}
+  project_description: {{ cookiecutter.project_description }}
+  license: {{ cookiecutter.license }}
+  github_url: {{ cookiecutter.github_url }}
+  github_username: {{ cookiecutter.github_username }}
+  github_project_name: {{ cookiecutter.github_project_name }}
+  pypi_project_name: {{ cookiecutter.pypi_project_name }}
+  gist_id: {{ cookiecutter.gist_id }}
+  gist_username: {{ cookiecutter.gist_username }}
+  sign_binaries: {{ cookiecutter.sign_binaries }}
+  openssf_best_practices_badge_id: {{ cookiecutter.openssf_best_practices_badge_id }}
+  create_docker_image: {{ cookiecutter.create_docker_image }}

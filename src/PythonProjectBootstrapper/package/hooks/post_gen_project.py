@@ -313,31 +313,6 @@ def SavePrompts() -> None:
 
 {% endif %}
 
-    prompts["[OPTIONAL] Save this Configuration"] = textwrap.dedent(
-        """\
-        If you would like to regenerate this project in the future with the same configuration.
-
-        1. Edit a file named 'configuration.yaml' with the contents:
-
-               default_context:
-                 name: {{ cookiecutter.name }}
-                 email: {{ cookiecutter.email }}
-                 project_description: {{ cookiecutter.project_description }}
-                 license: {{ cookiecutter.license }}
-                 github_url: {{ cookiecutter.github_url }}
-                 github_username: {{ cookiecutter.github_username }}
-                 github_project_name: {{ cookiecutter.github_project_name }}
-                 pypi_project_name: {{ cookiecutter.pypi_project_name }}
-                 gist_id: {{ cookiecutter.gist_id }}
-                 gist_username: {{ cookiecutter.gist_username }}
-                 sign_binaries: {{ cookiecutter.sign_binaries }}
-                 openssf_best_practices_badge_id: {{ cookiecutter.openssf_best_practices_badge_id }}
-                 create_docker_image: {{ cookiecutter.create_docker_image }}
-
-        2. Run 'PythonProjectBootstrapper package <output_dir> --configuration configuration.yaml` to regenerate the project.
-        """,
-    )
-
     with open(prompt_filename, "w") as prompt_file:
         # Modify the keys to include an index to ensure that the prompts are displayed in the
         # correct order after being read from the yaml file created here.
