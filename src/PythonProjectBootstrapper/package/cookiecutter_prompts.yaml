@@ -93,11 +93,18 @@ minisign_public_key: |-
       4. Paste the copied key here.
 
 openssf_best_practices_badge_id: |-
-  Enter the OpenSSF Best Practices Badge ID to display in your README.md file. Keep this default value if you do not have an OpenSSF Best Practices Badge ID but would like to create one (this is highly recommended). Enter the value 'none' if you do not want to display this badge in your README.md file.
+  Please enter your OpenSSF Best Practices Badge id for use with this project or "none" if you do not want to display this badge. Visit https://www.bestpractices.dev/ for additional information about this badge.
 
-  The Open Source Security Foundation (OpenSSF) Best Practices badge is a way for Free/Libre and Open Source Software (FLOSS) projects to show that they follow best practices. Additional information is available at https://www.bestpractices.dev/.
+  To create a OpenSSF Best Practices Badge id for use with this project:
+      1. Visit https://www.bestpractices.dev/
+      2. Click the "Get Your Badge Now!" button.
+      3. In the top form, select the corresponding repository.
+      4. Click the "Submit GitHub Repository" button.
+      5. Copy the badge id from the URL of the page that is displayed. It will look something like:
 
-  This script will automatically generate scaffolding to achieve a 63% score. Completing your project's documentation and following development best practices will raise your score to 100%. Participation in the OpenSSF Best Practices Badge program is highly recommended.
+          https://www.bestpractices.dev/en/projects/12345
+                                                    ^^^^^
+                                                      This is the badge id
 
 create_docker_image: |-
   Would you like the GitHub Action workflows to create docker images of the development environment? These images can be used to produce exact results across different commits made to the repository over time (which is especially valuable when writing scientific software).

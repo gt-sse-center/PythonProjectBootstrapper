@@ -186,6 +186,118 @@ def SavePrompts() -> None:
         """,
     )
 
+{% if cookiecutter.openssf_best_practices_badge_id != "none" %}
+    prompts["Update the OpenSSF Best Practices Badge [Basics]"] = textwrap.dedent(
+        """\
+        In this step, we will populate the "Basics" section of the OpenSSF Best Practices Badge.
+
+        1. Visit https://www.bestpractices.dev/en/projects/{{ cookiecutter.openssf_best_practices_badge_id }}/edit#basics
+        2. Search for these options and set them to the following values:
+
+            \[interact]: Met
+            \[contribution]: Met (Non-trivial contribution file in repository: <{{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/CONTRIBUTING.md>.)
+            \[contribution_requirements]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/CONTRIBUTING.md)
+            What license(s) is the project released under?: {{ cookiecutter.license }}
+            \[floss_license]: Met
+            \[floss_license_osi]: Met
+            \[license_location]: Met (Non-trivial license location file in repository: <{{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/LICENSE.txt>.)
+            \[discussion]: Met
+            \[english]: Met
+
+        3. Click on the "Save (and continue)" button.
+        """,
+    )
+
+    prompts["Update the OpenSSF Best Practices Badge [Change Control]"] = textwrap.dedent(
+        """\
+        In this step, we will populate the "Change Control" section of the OpenSSF Best Practices Badge.
+
+        1. Visit https://www.bestpractices.dev/en/projects/{{ cookiecutter.openssf_best_practices_badge_id }}/edit#changecontrol
+        2. Search for these options and set them to the following values:
+
+            \[repo_public]: Met
+            \[repo_track]: Met
+            \[repo_distributed]: Met
+            \[repo_interim]: Met
+            \[version_unique]: Met
+            \[version_semver]: Met
+            \[version_tags]: Met
+            \[release_notes]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/releases/latest)
+
+        3. Click on the "Save (and continue)" button.
+        """,
+    )
+
+    prompts["Update the OpenSSF Best Practices Badge [Reporting]"] = textwrap.dedent(
+        """\
+        In this step, we will populate the "Reporting" section of the OpenSSF Best Practices Badge.
+
+        1. Visit https://www.bestpractices.dev/en/projects/{{ cookiecutter.openssf_best_practices_badge_id }}/edit#reporting
+        2. Search for these options and set them to the following values:
+
+            \[report_process]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/CONTRIBUTING.md)
+            \[report_tracker]: Met
+            \[report_responses]: Met
+            \[report_archive]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/issues)
+            \[vulnerability_report_process]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/SECURITY.md)
+            \[vulnerability_report_private]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/SECURITY.md)
+
+        3. Click on the "Save (and continue)" button.
+        """,
+    )
+
+    prompts["Update the OpenSSF Best Practices Badge [Quality]"] = textwrap.dedent(
+        """\
+        In this step, we will populate the "Quality" section of the OpenSSF Best Practices Badge.
+
+        1. Visit https://www.bestpractices.dev/en/projects/{{ cookiecutter.openssf_best_practices_badge_id }}/edit#quality
+        2. Search for these options and set them to the following values:
+
+            \[build]: Met
+            \[build_common_tools]: Met
+            \[build_floss_tools]: Met
+            \[test]: Met
+            \[test_invocation]: Met
+            \[test_most]: Met
+            \[test_continuous_integration]: Met
+            \[test_policy]: Met
+            \[tests_are_added]: Met
+            \[tests_documented_added]: Met
+            \[warnings]: Met
+            \[warnings_fixed]: Met
+            \[warnings_strict]: Met
+
+        3. Click on the "Save (and continue)" button.
+        """,
+    )
+
+    prompts["Update the OpenSSF Best Practices Badge [Security]"] = textwrap.dedent(
+        """\
+        In this step, we will populate the "Security" section of the OpenSSF Best Practices Badge.
+
+        1. Visit https://www.bestpractices.dev/en/projects/{{ cookiecutter.openssf_best_practices_badge_id }}/edit#security
+        2. Search for these options and set them to the following values:
+
+            \[static_analysis]: Met (pylint, CodeQL)
+            \[static_analysis_common_vulnerabilities]: Met
+            \[static_analysis_often]: Met
+            \[dynamic_analysis]: Met
+            \[dynamic_analysis_unsafe]: N/A
+
+        3. Click on the "Save (and continue)" button.
+        """,
+    )
+
+    prompts["Update the OpenSSF Best Practices Badge [Final]"] = textwrap.dedent(
+        """\
+        With the changes previously described, you should see a score of 63% (the score produced at the time that this documentation was written). Take a look at the unmet criteria to see if there are any additional changes that you can make to improve your score.
+
+        When you are finished, make sure to click on the "Submit (and exit)" button.
+        """,
+    )
+
+{% endif %}
+
     prompts["Update README.md"] = textwrap.dedent(
         """\
         In this step, we will update the README.md file with information about your project.
@@ -195,96 +307,6 @@ def SavePrompts() -> None:
         3. Replace the "TODO" comment in the "How to use {{ cookiecutter.github_project_name }}" section.
         """,
     )
-
-{% if cookiecutter.openssf_best_practices_badge_id != "none" %}
-    prompts["Create the OpenSSF Best Practices Badge"] = textwrap.dedent(
-        """\
-        In this step, we will populate information on www.bestpractices.dev that is used to display
-        the badge on our README.md file.
-
-        1. Visit https://www.bestpractices.dev/
-        2. Click the "Get Your Badge Now!" button.
-        3. In the lower form, provide these values:
-                What is the URL for the project home page?
-                    {{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}
-                What is the URL for the version control repository?
-                    {{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}
-        4. Click the "Submit URL" button.
-        5. Search for these options and set them to the following values:
-
-                Basics
-                    \[interact]: Met
-                    \[contribution_requirements]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/CONTRIBUTING.md)
-                    \[english]: Met
-
-                Change Control
-                    \[repo_interim]: Met
-                    \[version_unique]: Met
-                    \[version_semver]: Met
-                    \[version_tags]: Met
-                    \[release_notes]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/releases/latest)
-
-                Reporting
-                    \[report_process]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/CONTRIBUTING.md)
-                    \[report_tracker]: Met
-                    \[report_responses]: Met
-                    \[report_archive]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/issues)
-                    \[vulnerability_report_process]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/SECURITY.md)
-                    \[vulnerability_report_private]: Met ({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/SECURITY.md)
-
-                Quality
-                    \[build]: Met
-                    \[build_common_tools]: Met
-                    \[build_floss_tools]: Met
-                    \[test]: Met
-                    \[test_invocation]: Met
-                    \[test_most]: Met
-                    \[test_continuous_integration]: Met
-                    \[test_policy]: Met
-                    \[tests_are_added]: Met
-                    \[tests_documented_added]: Met
-                    \[warnings]: Met
-                    \[warnings_fixed]: Met
-                    \[warnings_strict]: Met
-
-                Analysis
-                    \[static_analysis]: Met (pylint, CodeQL)
-                    \[static_analysis_common_vulnerabilities]: Met
-                    \[static_analysis_often]: Met
-                    \[dynamic_analysis]: Met
-                    \[dynamic_analysis_unsafe]: N/A
-
-           These changes will result in a score of 63% (at the time this documentation was written). The remaining fields rely on documentation specific to your project
-           or developer behavior based on your interaction with the package (fix critical vulnerabilities within 60 days, etc.).
-
-        6. Click on the "Submit (and exit)" button.
-        7. Copy the unique id of your project from the bestpractices.dev URL for use in the next step.
-
-            https://www.bestpractices.dev/en/projects/12345
-                                                      ^^^^^
-                                                      This is the unique id of your project
-        """,
-    )
-
-    prompts["Save the OpenSSF Best Practices Badge ID"] = textwrap.dedent(
-        """\
-        In this step, we will update README.md with the OpenSSF Best Practices Badge ID.
-
-        1. Edit 'README.md'.
-        2. Search for '__openssf_badge_id__' and replace all instances with the badge id copied in the previous step.
-        3. Save 'README.md'.
-        """,
-    )
-
-    prompts["Commit and Push the OpenSSF Best Practices Badge ID Changes"] = textwrap.dedent(
-        """\
-        1. Run 'git add --all'
-        2. Run 'git commit -m "🎉 Updated README.md with OpenSSF Best Practices Badge ID"'
-        3. Run 'git push'
-        """,
-    )
-
-{% endif %}
 
     with open(prompt_filename, "w") as prompt_file:
         # Modify the keys to include an index to ensure that the prompts are displayed in the
