@@ -176,6 +176,34 @@ def test_CopyToOutputDir_overwritePrompt(fs, overwrite):
 
 
 # ----------------------------------------------------------------------
+@pytest.mark.parametrize("recreate", ["y", "n"])
+def test_CopyToOutputDir_recreatePrompt(fs, recreate):
+    src = Path("src")
+    src2 = Path("src2")
+    dest = Path("dest")
+
+    files1 = [("testFile", "abc"), ("testFile2", "def"), ("testFile3", "hello")]
+    files2 = [("testFile", "abc"), ("testFile2", "def"), ("testFile3", "hi")]
+
+    for filepath, content in files1:
+        fs.create_file(src / filepath, contents=content)
+        fs.create_file(src2 / filepath, contents=content)
+
+    fs.create_dir(dest)
+
+    CopyToOutputDir(src_dir=src, dest_dir=dest)
+
+    dest_filename = dest / "testFile"
+
+    dest_filename.unlink()
+
+    with patch("builtins.input", lambda *args: recreate):
+        CopyToOutputDir(src_dir=src2, dest_dir=dest)
+
+    assert dest_filename.is_file() == (recreate == "y")
+
+
+# ----------------------------------------------------------------------
 def test_CopyToOutputDir_no_prompt(fs):
     # Test for the following:
     #   - All created files and directories are copied into the dest

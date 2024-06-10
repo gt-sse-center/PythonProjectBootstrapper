@@ -33,7 +33,7 @@ def Execute(
         step-by-step instructions on how to set up your project so that it works with 3rd party
         solutions (GitHub, PyPi, etc.).
 
-        The entire process should take about 20 minutes to complete.
+        The entire process should take about 25 minutes to complete.
         """,
     )
 
