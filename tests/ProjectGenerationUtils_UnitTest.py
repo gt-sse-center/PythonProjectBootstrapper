@@ -29,14 +29,14 @@ def _dirs_equal(dir1: Path, dir2: Path) -> bool:
     generated_files2: list[Path] = []
 
     for root, _, files in os.walk(dir1):
-        if ".manifest.yml" in files:
-            files.remove(".manifest.yml")
+        if ".python_project_bootstrapper_manifest.yml" in files:
+            files.remove(".python_project_bootstrapper_manifest.yml")
 
         generated_files1 += [Path(root) / Path(file) for file in files]
 
     for root, _, files in os.walk(dir2):
-        if ".manifest.yml" in files:
-            files.remove(".manifest.yml")
+        if ".python_project_bootstrapper_manifest.yml" in files:
+            files.remove(".python_project_bootstrapper_manifest.yml")
 
         generated_files2 += [Path(root) / Path(file) for file in files]
 
@@ -166,7 +166,7 @@ def test_CopyToOutputDir_overwritePrompt(fs, overwrite):
         with open(dest / path, "r") as destfile:
             assert content == destfile.read()
 
-    manifest_filepath = dest / ".manifest.yml"
+    manifest_filepath = dest / ".python_project_bootstrapper_manifest.yml"
     assert manifest_filepath.is_file()
 
     # check that manifest file has read-only permissions
@@ -199,7 +199,7 @@ def test_CopyToOutputDir_no_prompt(fs):
     fs.create_dir(dest)
 
     directory_changes = CopyToOutputDir(src_dir=src, dest_dir=dest)
-    manifest_filepath = dest / ".manifest.yml"
+    manifest_filepath = dest / ".python_project_bootstrapper_manifest.yml"
 
     assert directory_changes.added_files == ["dest/test/file1", "dest/test/file2"]
     assert directory_changes.deleted_files == []

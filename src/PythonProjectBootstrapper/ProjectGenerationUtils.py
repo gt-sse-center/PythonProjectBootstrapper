@@ -175,7 +175,7 @@ def CopyToOutputDir(
     1. If a file in the src_dir does not exist in the dest_dir, copy it over
     2. If a file in the src_dir exists in the dest_dir, copy it over only if the file in the dest_dir has never been modified by the user OR after prompted, they approve overwriting their changes
 
-    Additionally, write the final manifest to "<dest_dir>/.manifest.yml". This manifest should reflect the state of the output directory after the project generation has completed
+    Additionally, write the final manifest to "<dest_dir>/.python_project_bootstrapper_manifest.yml". This manifest should reflect the state of the output directory after the project generation has completed
 
     Args:
         src_dir (Path): path to source dir
@@ -202,7 +202,7 @@ def CopyToOutputDir(
     modified_template_files: list[str] = []
     unchanged_files_deleted: list[str] = []
 
-    potential_manifest: Path = dest_dir / ".manifest.yml"
+    potential_manifest: Path = dest_dir / ".python_project_bootstrapper_manifest.yml"
 
     # if this is not our first time generating, remove unwanted template files
     if potential_manifest.is_file():

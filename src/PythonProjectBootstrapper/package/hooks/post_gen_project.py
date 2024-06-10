@@ -303,7 +303,7 @@ def SavePrompts() -> None:
         """,
     )
 
-    prompts["Commit and Push the Repository"] = textwrap.dedent(
+    prompts["Commit and Push the OpenSSF Best Practices Badge ID Changes"] = textwrap.dedent(
         """\
         1. Run 'git add --all'
         2. Run 'git commit -m "🎉 Updated README.md with OpenSSF Best Practices Badge ID"'
