@@ -19,9 +19,8 @@
 ## Contents
 - [Overview](#overview)
 - [Installation](#installation)
-- [Contributing](#contributing)
-- [Local Development](#local-development)
-- [Vulnerability Reporting](#vulnerability-reporting-security-issues)
+- [Development](#development)
+- [Additional Information](#additional-information)
 - [License](#license)
 <!-- END: Exclude Package -->
 
@@ -69,18 +68,24 @@ Install the {{ cookiecutter.pypi_project_name }} package via [pip](https://pip.p
 
 `pip install {{ cookiecutter.pypi_project_name }}`
 
-## Contributing
-See [CONTRIBUTING.md]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/CONTRIBUTING.md) for information on contributing to {{ cookiecutter.github_project_name }}.
+## Development
 
-## Local Development
+Please visit [Contributing]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/CONTRIBUTING.md) and [Development]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/DEVELOPMENT.md) for information on contributing to this project.
 
-See [DEVELOPMENT.md]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/DEVELOPMENT.md) for information on developing or testing {{ cookiecutter.github_project_name }} on your local Linux, MacOS, or Windows machine.
 <!-- END: Exclude Package -->
 
-## Vulnerability Reporting (Security Issues)
-Please privately report vulnerabilities you find so we can fix them!
+## Additional Information
 
-See [SECURITY.md]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/SECURITY.md) for information on how to privately report vulnerabilities.
+Additional information can be found at these locations.
+
+| Title | Document | Description |
+| --- | --- | --- |
+| Code of Conduct | [CODE_OF_CONDUCT.md]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/CODE_OF_CONDUCT.md) | Information about the the norms, rules, and responsibilities we adhere to when participating in this open source community. |
+| Contributing | [CONTRIBUTING.md]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/CONTRIBUTING.md) | Information about contributing code changes to this project. |
+| Development | [DEVELOPMENT.md]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/DEVELOPMENT.md) | Information about development activities involved in making changes to this project. |
+| Governance | [GOVERNANCE.md]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/GOVERNANCE.md) | Information about how this project is governed. |
+| Maintainers | [MAINTAINERS.md]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/MAINTAINERS.md) | Information about individuals who maintain this project. |
+| Security | [SECURITY.md]({{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/blob/main/SECURITY.md) | Information about how to privately report security issues associated with this project. |
 
 ## License
 

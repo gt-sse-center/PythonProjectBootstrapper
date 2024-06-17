@@ -13,5 +13,5 @@ build/**
 dist/**
 src/PythonProjectBootstrapper.egg-info/**
 
-key.pri
-key.pub
+minisign_key.pri
+minisign_key.pub
