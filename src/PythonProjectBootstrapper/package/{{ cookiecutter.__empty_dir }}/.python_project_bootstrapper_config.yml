@@ -3,7 +3,7 @@
 # to rerun generation on this python package. To use this file, run the following command from within this
 # working directory:
 #
-#   PythonProjectBootstrapper package . --config .python_project_bootstrapper_config.yml
+#   PythonProjectBootstrapper package . --configuration .python_project_bootstrapper_config.yml
 #
 #############################################################################################################
 default_context:

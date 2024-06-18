@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------
-#
-# Copyright (c) 2024 Scientific Software Engineering Center at Georgia Tech
-# Distributed under the MIT License.
-#
+# |
+# |  Copyright (c) 2024 Scientific Software Engineering Center at Georgia Tech
+# |  Distributed under the MIT License.
+# |
 # ----------------------------------------------------------------------
 name: "Standard"
 
@@ -183,13 +183,16 @@ jobs:
     with:
       operating_system: ${{ matrix.os }}
       python_version: ${{ matrix.python_version }}
-      validation_command: PythonProjectBootstrapper package this_value_is_ignored --version
+      validation_command: PythonProjectBootstrapper package --version
+
+
 
   # ----------------------------------------------------------------------
   publish:
     needs:
       - validate_package
       - validate_binary
+
 
     name: Publish
 
@@ -201,3 +204,5 @@ jobs:
       release_sources_configuration_filename: .github/release_sources.yaml
     secrets:
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+      MINISIGN_PRIVATE_KEY: ${{ secrets.MINISIGN_PRIVATE_KEY }}

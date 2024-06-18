@@ -1,0 +1,38 @@
+#############################################################################################################
+# This file is used by PythonProjectBootstrapper (https://github.com/gt-sse-center/PythonProjectBootstrapper)
+# to determine whether changes have been made to any files in the project. These values are saved in case the
+# project is regenerated so we can avoid overwriting any user changes. Please do not change the contents :)
+#############################################################################################################
+
+.github/CODEOWNERS: 42bdd9797e12e16d0fe3e10f798da519189b41eeca25da34ce3bab44cb04aa68
+.github/ISSUE_TEMPLATE/bug_report.md: 0d0cac487c4b348cf88f29e0a7e446aff6e3b1f3fd8c3fc791312069f0939c43
+.github/ISSUE_TEMPLATE/config.yml: d6d81427cbfd6fb2c87462698c241fd6c31e47025c137498e50b8a01b228cb95
+.github/ISSUE_TEMPLATE/custom.md: 14e93edcf3acd7351957a11551565a3d03317eb9246a46bbbd9e01b8f28cf843
+.github/ISSUE_TEMPLATE/feature_request.md: 84fca7a1f0095afb8de52af8a03fc6f3f62b42b30365547992ad83a4b638cf41
+.github/pull_request_template.md: 6a7736d2a3ed6154e3f84462b483d7640709abe7f42e7caff63354eec84788af
+.github/release_sources.yaml: c2241d25423ec6e22afa41c6caed30162438af803e6de74ee466479ca6cd8246
+.github/workflows/codeql.yml: 5e6e94a06f17ebbd8d3042467327837bb2076c29a1414b794800a3c1b09cca7d
+.github/workflows/standard.yaml: 67d46981413db61fa435984c505db98513047848d71a268ca830ce5c368bf62b
+.gitignore: 5898ee882c89a06ac046fb91b791950cb095157fccab17f31e9c5f6d0ed722da
+.python_project_bootstrapper_config.yml: fdb86c64cb7cc5927ae227138440af9e54fda901026625d2370f33e87caf280f
+ActivateEpilog.py: 102bb407fb3efcdbb697c4c5ea0d98236d43490ff9297bfa00b37ffaed66501d
+Bootstrap.cmd: 48a673262f121c847d924d9b4b1db2a7ee01ef46d0aca8912d0c90f1f1d464c1
+Bootstrap.sh: c68ba07e6ab2df55c54a0285becf8c510cba9d0738f7c1b59b24a6188bb486f8
+BootstrapEpilog.py: bb93ebafd101e6434c3342bb9d9e337254b199e3cfff6035a3f33c16b4db7188
+Build.py: 711c112b877fb5a3fd71a7942f2b572a0546ff62bd65acaa91b9da16de685717
+CODE_OF_CONDUCT.md: 4b1e95a3ab0841adc68d4b43064c4021e423d2efe37e80ba2c74e18c0959d1cb
+CONTRIBUTING.md: 8bdfa4f1c635965e1d8cc008e95b4562afa096a1d2d9b5f794955970c2cfc725
+DEVELOPMENT.md: b053ad0fe1c507e4fb1ebe950f36796d5083f85adbb435f5fefb32f0c5220486
+GOVERNANCE.md: 20e9812c403a41ba86aaf95e1efde35c94f195109f0da2632a7fde6c0562916b
+LICENSE.txt: cdcedfdd3d9071859f7902f300b73f3cd1573de80a9086317c5bdf0863ad5458
+MAINTAINERS.md: deeb3c59f9ea4638cde04690e0b4ceb68ada72ab2c5cf99fec8139b4ba262d9e
+README.md: 93b3bc9474594c3be11cbcde28bc5d342c847d7aec5bc232bafb118721771cd6
+SECURITY.md: baac87b1d8ca9981d01299679d039f06fed99f9fdc59c0f9ed723122aaaeabff
+pyproject.toml: 5f07c159ea6a829ff62ae0273878fc25ad5c08bde1ff5ec47f654ab64539ac82
+src/AutoGitSemVer.yaml: 8829c49a62fcfba1bb17b03ac0f8a9e38a3777e49f058b16a79e4f4c782ddd7b
+src/BuildBinary.py: bf736a35211fd68b2d1d8f9323e59d42c778bb0173cf18baa55dc439c18dea9b
+src/PythonProjectBootstrapper/EntryPoint.py: e384c323ce48c2b768a12274dc0d7fbd13b1a60fb5790d0b60602b571138f57f
+src/PythonProjectBootstrapper/Math.py: c339e168155404407d1196fb822df748f638fc7be5544a0add5aa6814e27c177
+src/PythonProjectBootstrapper/__init__.py: 455ff824b13e41ce2cfc5e9cccac234d1e8e1958e065e2af5ff8799c5c9cc73e
+tests/EntryPoint_UnitTest.py: a32616e9bb6bbf10e9cb4b63e54c8013357a8988087c5f95f216e74d5b61ec15
+tests/Math_UnitTest.py: c9901514bf4ca017fc3c62dc1854c77e52fe5ac61dd3d4358d70faeebdff8422

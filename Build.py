@@ -4,7 +4,7 @@
 # |  Distributed under the MIT License.
 # |
 # ----------------------------------------------------------------------
-"""Build tasks for this python module."""
+"""Build tasks for this python project."""
 
 import sys
 
@@ -13,9 +13,8 @@ from pathlib import Path
 import typer
 
 from dbrownell_Common import PathEx
-from typer.core import TyperGroup
-
 from dbrownell_DevTools.RepoBuildTools import Python as RepoBuildTools
+from typer.core import TyperGroup
 
 
 # ----------------------------------------------------------------------
@@ -74,11 +73,14 @@ Publish = RepoBuildTools.PublishFuncFactory(this_dir, app)
 
 BuildBinary = RepoBuildTools.BuildBinaryFuncFactory(
     this_dir,
-    src_dir / "BuildBinary.py",
+    PathEx.EnsureFile(src_dir / "BuildBinary.py"),
     app,
 )
 
-CreateDockerImage = RepoBuildTools.CreateDockerImageFuncFactory(this_dir, app)
+CreateDockerImage = RepoBuildTools.CreateDockerImageFuncFactory(
+    this_dir,
+    app,
+)
 
 
 # ----------------------------------------------------------------------
