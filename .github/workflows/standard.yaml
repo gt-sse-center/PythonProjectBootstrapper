@@ -73,7 +73,7 @@ jobs:
 
   # ----------------------------------------------------------------------
   create_package:
-    needs: validate
+    needs: package_coverage
 
     strategy:
       fail-fast: false
@@ -134,7 +134,7 @@ jobs:
 
   # ----------------------------------------------------------------------
   create_binary:
-    needs: validate
+    needs: package_coverage
 
     strategy:
       fail-fast: false

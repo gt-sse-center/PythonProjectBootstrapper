@@ -68,7 +68,7 @@ jobs:
 
   # ----------------------------------------------------------------------
   create_package:
-    needs: validate
+    needs: package_coverage
 
     strategy:
       fail-fast: false
@@ -98,7 +98,7 @@ jobs:
 
   # ----------------------------------------------------------------------
   validate_package:
-    needs: create_package
+    needs: package_coverage
 
     strategy:
       fail-fast: false
