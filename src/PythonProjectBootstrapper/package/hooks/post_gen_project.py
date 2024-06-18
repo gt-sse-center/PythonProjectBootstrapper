@@ -106,16 +106,16 @@ def SavePrompts() -> None:
         f"""\
         In this step, we will save the Minisign private key as a GitHub Action Secret.
 
-        1. Open 'key.pri' in a text editor.
+        1. Open 'minisign_key.pri' in a text editor.
         2. Copy the contents of the file.
         3. Visit {{ cookiecutter.github_url }}/{{ cookiecutter.github_username }}/{{ cookiecutter.github_project_name }}/settings/secrets/actions
         4. In the "Repository secrets" section...
         5. Click the "New repository secret" button
         6. Enter the values:
                 Name:     MINISIGN_PRIVATE_KEY
-                Secret:   <paste the contents of key.pri copied in step #2>
+                Secret:   <paste the contents of minisign_key.pri copied in step #2>
         7. Click the "Save" button
-        8. Save 'key.pri' in a safe place.
+        8. Save 'minisign_key.pri' in a safe place.
         """,
     )
 {% endif %}
@@ -315,15 +315,15 @@ def SavePrompts() -> None:
 
 {% endif %}
 
-    prompts["Update README.md"] = textwrap.dedent(
-        """\
-        In this step, we will update the README.md file with information about your project.
+    for filename in ["README.md", "MAINTAINERS.md"]:
+        prompts[f"Update {filename}"] = textwrap.dedent(
+            f"""\
+            In this step, we will update the {filename} file with information about your project.
 
-        1. Edit README.md
-        2. Replace the "TODO" comment in the "Overview" section.
-        3. Replace the "TODO" comment in the "How to use {{ cookiecutter.github_project_name }}" section.
-        """,
-    )
+            1. Edit {filename}
+            2. Replace the "TODO" comments in the file.
+            """,
+        )
 
     with open(prompt_filename, "w") as prompt_file:
         # Modify the keys to include an index to ensure that the prompts are displayed in the

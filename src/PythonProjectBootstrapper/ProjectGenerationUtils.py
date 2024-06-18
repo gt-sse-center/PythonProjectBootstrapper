@@ -267,7 +267,7 @@ def CopyToOutputDir(
                 and current_file_hash == existing_manifest[rel_filepath]
             ):
                 modified_template_files.append(output_dir_filepath.as_posix())
-        elif potential_manifest.is_file():
+        elif rel_filepath in existing_manifest:
             # If here, the file no longer exists. We still want the file to exist in the manifest
             # (so that future generations are still aware of it), but do not want it to be created
             # again.

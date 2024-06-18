@@ -31,6 +31,9 @@ Tool that helps in the creation of python projects.
 - Wheel deployment to [PyPi](https://pypi.org)
 - Executable generation via [cx_Freeze](https://marcelotduarte.github.io/cx_Freeze/)
 - Full [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration), [Continuous Delivery](https://en.wikipedia.org/wiki/Continuous_delivery), and [Continuous Deployment](https://en.wikipedia.org/wiki/Continuous_deployment) (via [GitHub Actions](https://github.com/features/actions)) for everything listed above
+- GitHub [Recommended Community Standards](https://opensource.guide/) documentation
+- GitHub [pull request template](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/creating-a-pull-request-template-for-your-repository)
+- GitHub [issue templates](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository)
 - [Optional] Build artifact signing via [Minisign](https://jedisct1.github.io/minisign/)
 - [Optional] Participation in the [Open Source Security Foundation (OpenSSF) Best Practices Badge Program](https://www.bestpractices.dev/)
 - [Optional] Generation of development environment [docker](https://www.docker.com/) [images](https://aws.amazon.com/compare/the-difference-between-docker-images-and-containers/) in support of [FAIR principles](https://www.go-fair.org/fair-principles/)
@@ -161,6 +164,7 @@ There are other tools available that offer similar functionality, each emphasizi
 | [LINCC Frameworks Python Project Template](https://github.com/lincc-frameworks/python-project-template) | This project template codifies LINCC-Framework's best practices for python code organization, testing, documentation, and automation. |
 | [Cookiecutter Django](https://github.com/cookiecutter/cookiecutter-django) | Cookiecutter Django is a framework for jumpstarting production-ready Django projects quickly. |
 | [cookiecutter-pylibrary](https://github.com/ionelmc/cookiecutter-pylibrary) | Enhanced cookiecutter template for Python libraries. |
+| [repo-scaffolder](https://github.com/DSACMS/repo-scaffolder) | Templates and commandline tools for creating repositories for US Federal open source projects |
 
 ### Templating Systems
 

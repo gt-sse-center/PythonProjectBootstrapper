@@ -87,9 +87,9 @@ minisign_public_key: |-
   Additional information is available at https://docs.docker.com/engine/install/.
 
   To create a Minisign key pair for use with this project:
-      1. Run 'docker run -i --rm -v ".:/host" jedisct1/minisign -G -p /host/key.pub -s /host/key.pri -W'
-      2. Ensure that the file 'key.pri' exists (this file will be used later).
-      3. Open the file 'key.pub' and copy the key from the file; the key will be the last line of the file.
+      1. Run 'docker run -i --rm -v ".:/host" jedisct1/minisign -G -p /host/minisign_key.pub -s /host/minisign_key.pri -W'
+      2. Ensure that the file 'minisign_key.pri' exists (this file will be used later).
+      3. Open the file 'minisign_key.pub' and copy the key from the file; the key will be the last line of the file.
       4. Paste the copied key here.
 
 openssf_best_practices_badge_id: |-
