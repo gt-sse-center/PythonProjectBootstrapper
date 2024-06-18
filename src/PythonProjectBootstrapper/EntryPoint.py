@@ -73,6 +73,9 @@ def _CreateProjectType():
         if not file_item.is_dir():
             continue
 
+        if file_item.name.startswith("."):
+            continue
+
         project_types.append(file_item.name)
 
     assert project_types

@@ -295,11 +295,23 @@ def SavePrompts() -> None:
         1. Visit https://www.bestpractices.dev/en/projects/{{ cookiecutter.openssf_best_practices_badge_id }}/edit#security
         2. Search for these options and set them to the following values:
 
+            \[dynamic_analysis]: Met
+            \[dynamic_analysis_unsafe]: N/A
+
+        3. Click on the "Save (and continue)" button.
+        """,
+    )
+
+    prompts["Update the OpenSSF Best Practices Badge [Analysis]"] = textwrap.dedent(
+        """\
+        In this step, we will populate the "Analysis" section of the OpenSSF Best Practices Badge.
+
+        1. Visit https://www.bestpractices.dev/en/projects/{{ cookiecutter.openssf_best_practices_badge_id }}/edit#analysis
+        2. Search for these options and set them to the following values:
+
             \[static_analysis]: Met (pylint, CodeQL)
             \[static_analysis_common_vulnerabilities]: Met
             \[static_analysis_often]: Met
-            \[dynamic_analysis]: Met
-            \[dynamic_analysis_unsafe]: N/A
 
         3. Click on the "Save (and continue)" button.
         """,

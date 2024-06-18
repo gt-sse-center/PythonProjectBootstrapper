@@ -12,6 +12,7 @@ import sys
 
 from pathlib import Path
 
+
 # Parse the arguments
 is_debug = False
 is_force = False
@@ -21,9 +22,8 @@ no_cache = False
 
 display_flags: list[str] = []
 
-for arg in sys.argv[
-    2:
-]:  # First arg is the script name, second arg is the name of the shell script to write to
+# First arg is the script name, second arg is the name of the shell script to write to
+for arg in sys.argv[2:]:
     if arg == "--debug":
         is_debug = True
     elif arg == "--force":
@@ -36,7 +36,7 @@ for arg in sys.argv[
     elif arg == "--no-cache":
         no_cache = True
     else:
-        raise Exception("Unrecognized argument: {}".format(arg))
+        raise Exception("'{}' is not a recognized argument.".format(arg))
 
 if is_debug:
     is_verbose = True
@@ -49,7 +49,6 @@ subprocess.run(
     check=True,
     shell=True,
 )
-
 
 with (
     Path(__file__).parent / os.environ["PYTHON_BOOTSTRAPPER_GENERATED_DIR"] / "bootstrap_flags.json"

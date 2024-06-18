@@ -1,0 +1,22 @@
+#############################################################################################################
+# This file is used by PythonProjectBootstrapper (https://github.com/gt-sse-center/PythonProjectBootstrapper)
+# to rerun generation on this python package. To use this file, run the following command from within this
+# working directory:
+#
+#   PythonProjectBootstrapper package . --configuration .python_project_bootstrapper_config.yml
+#
+#############################################################################################################
+default_context:
+  name: Scientific Software Engineering Center at Georgia Tech
+  email: sse-center@gatech.edu
+  project_description: Tool that helps in the creation of python projects.
+  license: MIT
+  github_url: https://github.com
+  github_username: gt-sse-center
+  github_project_name: PythonProjectBootstrapper
+  pypi_project_name: PythonProjectBootstrapper
+  gist_id: 2f9d770d13e3a148424f374f74d41f4b
+  gist_username: davidbrownell
+  minisign_public_key: RWRkzrG0tznlEpemQ9U4aCQU/TO1TXipqycs7G9pRrm/9ab9HBcV/EIf
+  openssf_best_practices_badge_id: 9132
+  create_docker_image: False
