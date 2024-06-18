@@ -29,7 +29,7 @@ Tool that helps in the creation of python projects.
 
 #### Functionality Provided in Generated Projects
 
-- Simple local development through `Build.py` (see [Local Development](#local-development) for more information)
+- Simple local development through `Build.py` (see [DEVELOPMENT.md](https://github.com/gt-sse-center/PythonProjectBootstrapper/blob/main/DEVELOPMENT.md) for more information)
 - Python bootstrapping via [PythonBootstrapper](https://github.com/davidbrownell/PythonBootstrapper)
 - Source code formatting via [black](https://github.com/psf/black)
 - Static source analysis via [pylint](https://github.com/pylint-dev/pylint)
@@ -117,6 +117,28 @@ Enter 'yes' to continue or 'no' to exit:
         </td>
     </tr>
 </table>
+
+## Similar Tools
+
+There are other tools available that offer similar functionality, each emphasizing different domains, conventions, or workflows. They are listed here in the event that one of them is a better fit for the specifics of your scenario.
+
+| Tool | Description |
+| --- | --- |
+| [Scientific Python: guide, cookie, & sp-repo-review](https://github.com/scientific-python/cookie) | A copier/cookiecutter template for new Python projects based on the Scientific Python Developer Guide. |
+| [cookiecutter-cms](https://github.com/MolSSI/cookiecutter-cms) | A cookiecutter template for those interested in developing computational molecular packages in Python. |
+| [LINCC Frameworks Python Project Template](https://github.com/lincc-frameworks/python-project-template) | This project template codifies LINCC-Framework's best practices for python code organization, testing, documentation, and automation. |
+| [Cookiecutter Django](https://github.com/cookiecutter/cookiecutter-django) | Cookiecutter Django is a framework for jumpstarting production-ready Django projects quickly. |
+| [cookiecutter-pylibrary](https://github.com/ionelmc/cookiecutter-pylibrary) | Enhanced cookiecutter template for Python libraries. |
+| [repo-scaffolder](https://github.com/DSACMS/repo-scaffolder) | Templates and commandline tools for creating repositories for US Federal open source projects |
+
+### Templating Systems
+
+PythonProjectBootstrapper uses cookiecutter as its underlying templating engine, but others are available within python. Some are listed here if you want to use them directly.
+
+| Tool | Description |
+| --- | --- |
+| [cookiecutter](https://github.com/cookiecutter/cookiecutter) | A cross-platform command-line utility that creates projects from cookiecutters (project templates), e.g. Python package projects, C projects. |
+| [copier](https://github.com/copier-org/copier) | A library and CLI app for rendering project templates. |
 
 <!-- BEGIN: Exclude Package -->
 ## Installation
