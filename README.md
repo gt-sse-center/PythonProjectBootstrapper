@@ -1,5 +1,11 @@
 # PythonProjectBootstrapper
 
+<p>
+<mark>
+This repository has been deprecated in favor of <a href="https://github.com/gt-sse-center/copier-ProjectScaffolding">https://github.com/gt-sse-center/copier-ProjectScaffolding</a>.<code>copier-ProjectScaffolding</code> supports different project types and is based on <a href="https://copier.readthedocs.io/en/stable/">copier</a> - a more robust templating engine that supports inline template upgrades. Please use <a href="https://github.com/gt-sse-center/copier-ProjectScaffolding">https://github.com/gt-sse-center/copier-ProjectScaffolding</a> instead of this repository.
+</mark>
+</p>
+
 <!-- BEGIN: Exclude Package -->
 [![CI](https://github.com/gt-sse-center/PythonProjectBootstrapper/actions/workflows/standard.yaml/badge.svg?event=push)](https://github.com/gt-sse-center/PythonProjectBootstrapper/actions/workflows/standard.yaml)
 [![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/davidbrownell/2f9d770d13e3a148424f374f74d41f4b/raw/PythonProjectBootstrapper_coverage.json)](https://github.com/gt-sse-center/PythonProjectBootstrapper/actions)
